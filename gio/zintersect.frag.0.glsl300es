@@ -1,0 +1,15 @@
+#version 300 es
+precision mediump float;
+precision highp int;
+
+uniform mediump sampler2D cover;
+
+in highp vec2 vUV;
+layout(location = 0) out vec4 fragColor;
+
+void main()
+{
+    float cover_1 = abs(texture(cover, vUV).x);
+    fragColor.x = cover_1;
+}
+

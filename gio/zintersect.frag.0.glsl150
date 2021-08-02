@@ -1,0 +1,13 @@
+#version 150
+
+uniform sampler2D cover;
+
+in vec2 vUV;
+out vec4 fragColor;
+
+void main()
+{
+    float cover_1 = abs(texture(cover, vUV).x);
+    fragColor.x = cover_1;
+}
+
