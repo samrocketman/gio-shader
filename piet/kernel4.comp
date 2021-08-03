@@ -31,7 +31,7 @@ layout(rgba8, set = 0, binding = 2) uniform restrict writeonly image2D image;
 #ifdef ENABLE_IMAGE_INDICES
 layout(rgba8, set = 0, binding = 3) uniform restrict readonly image2D images[];
 #else
-layout(rgba8, set = 0, binding = 3) uniform restrict readonly image2D images[1];
+layout(rgba8, set = 0, binding = 3) uniform restrict readonly image2D images;
 #endif
 
 #include "ptcl.h"
@@ -77,7 +77,7 @@ mediump vec4[CHUNK] fillImage(uvec2 xy, CmdImage cmd_img) {
 #ifdef ENABLE_IMAGE_INDICES
         fg_rgba = imageLoad(images[cmd_img.index], uv);
 #else
-        fg_rgba = imageLoad(images[0], uv);
+        fg_rgba = imageLoad(images, uv);
 #endif
         fg_rgba.rgb = fromsRGB(fg_rgba.rgb);
         rgba[i] = fg_rgba;

@@ -117,9 +117,9 @@ layout(binding = 0, std430) buffer Memory
 layout(binding = 1, std430) restrict readonly buffer ConfigBuf
 {
     Config conf;
-} _686;
+} _683;
 
-layout(binding = 3, rgba8) uniform restrict readonly highp image2D images[1];
+layout(binding = 3, rgba8) uniform restrict readonly highp image2D images;
 layout(binding = 2, rgba8) uniform restrict writeonly highp image2D image;
 
 Alloc slice_mem(Alloc a, uint offset, uint size)
@@ -326,10 +326,10 @@ mediump vec4[8] fillImage(uvec2 xy, CmdImage cmd_img)
     {
         uint param = i;
         ivec2 uv = ivec2(xy + chunk_offset(param)) + cmd_img.offset;
-        mediump vec4 fg_rgba = imageLoad(images[0], uv);
+        mediump vec4 fg_rgba = imageLoad(images, uv);
         mediump vec3 param_1 = fg_rgba.xyz;
-        mediump vec3 _662 = fromsRGB(param_1);
-        fg_rgba = vec4(_662.x, _662.y, _662.z, fg_rgba.w);
+        mediump vec3 _659 = fromsRGB(param_1);
+        fg_rgba = vec4(_659.x, _659.y, _659.z, fg_rgba.w);
         rgba[i] = fg_rgba;
     }
     return rgba;
@@ -381,9 +381,9 @@ CmdJump Cmd_Jump_read(Alloc a, CmdRef ref)
 
 void main()
 {
-    uint tile_ix = (gl_WorkGroupID.y * _686.conf.width_in_tiles) + gl_WorkGroupID.x;
+    uint tile_ix = (gl_WorkGroupID.y * _683.conf.width_in_tiles) + gl_WorkGroupID.x;
     Alloc param;
-    param.offset = _686.conf.ptcl_alloc.offset;
+    param.offset = _683.conf.ptcl_alloc.offset;
     uint param_1 = tile_ix * 1024u;
     uint param_2 = 1024u;
     Alloc cmd_alloc = slice_mem(param, param_1, param_2);
@@ -560,8 +560,8 @@ void main()
                     uint param_32 = k_10;
                     uvec2 offset = chunk_offset(param_32);
                     mediump vec4 param_33 = vec4(rgba[k_10]);
-                    uint _1288 = packsRGB(param_33);
-                    uint srgb = _1288;
+                    uint _1285 = packsRGB(param_33);
+                    uint srgb = _1285;
                     mediump float alpha_1 = clamp(abs(area[k_10]), 0.0, 1.0);
                     Alloc param_34 = scratch_alloc;
                     uint param_35 = (base_ix + 0u) + (2u * (offset.x + (offset.y * 32u)));
