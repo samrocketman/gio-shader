@@ -17,6 +17,6 @@ layout(location = 0) out vec4 fragColor;
 
 void main() {
     fragColor = {{.FetchColorExpr}};
-	float cover = min(abs(texture(cover, vCoverUV).r), 1.0);
-	fragColor *= cover;
+	float c = min(abs(texture(cover, vCoverUV).r), 1.0);
+	fragColor *= c;
 }

@@ -10,7 +10,7 @@ in vec2 vCoverUV;
 void main()
 {
     fragColor = texture(tex, vUV);
-    float cover_1 = min(abs(texture(cover, vCoverUV).x), 1.0);
-    fragColor *= cover_1;
+    float c = min(abs(texture(cover, vCoverUV).x), 1.0);
+    fragColor *= c;
 }
 

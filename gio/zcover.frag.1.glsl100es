@@ -18,7 +18,7 @@ varying highp vec2 vCoverUV;
 void main()
 {
     gl_FragData[0] = mix(_gradient.color1, _gradient.color2, vec4(clamp(vUV.x, 0.0, 1.0)));
-    float cover_1 = min(abs(texture2D(cover, vCoverUV).x), 1.0);
-    gl_FragData[0] *= cover_1;
+    float c = min(abs(texture2D(cover, vCoverUV).x), 1.0);
+    gl_FragData[0] *= c;
 }
 

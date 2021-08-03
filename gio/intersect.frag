@@ -13,6 +13,5 @@ layout(binding = 0) uniform sampler2D cover;
 layout(location = 0) out vec4 fragColor;
 
 void main() {
-  float cover = abs(texture(cover, vUV).r);
-  fragColor.r = cover;
+  fragColor.r = abs(texture(cover, vUV).r);
 }

@@ -4,12 +4,11 @@ precision highp int;
 
 uniform mediump sampler2D cover;
 
-in highp vec2 vUV;
 layout(location = 0) out vec4 fragColor;
+in highp vec2 vUV;
 
 void main()
 {
-    float cover_1 = abs(texture(cover, vUV).x);
-    fragColor.x = cover_1;
+    fragColor.x = abs(texture(cover, vUV).x);
 }
 
