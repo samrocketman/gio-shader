@@ -22,21 +22,21 @@ type FXC struct {
 func NewFXC() *FXC { return &FXC{Bin: "fxc.exe"} }
 
 // Compile compiles the input shader.
-func (fxc *FXC) Compile(path, variant string, input []byte, entryPoint string, profileVersion string) (string, error) {
+func (fxc *FXC) Compile(path, variant string, input []byte, entryPoint string, profileVersion string) ([]byte, error) {
 	base := fxc.WorkDir.Path(filepath.Base(path), variant, profileVersion)
 	pathin := base + ".in"
 	pathout := base + ".out"
 	result := pathout
 
 	if err := fxc.WorkDir.WriteFile(pathin, input); err != nil {
-		return "", fmt.Errorf("unable to write shader to disk: %w", err)
+		return nil, fmt.Errorf("unable to write shader to disk: %w", err)
 	}
 
 	cmd := exec.Command(fxc.Bin)
 	if runtime.GOOS != "windows" {
 		cmd = exec.Command("wine", fxc.Bin)
 		if err := winepath(&pathin, &pathout); err != nil {
-			return "", err
+			return nil, err
 		}
 	}
 
@@ -49,7 +49,7 @@ func (fxc *FXC) Compile(path, variant string, input []byte, entryPoint string, p
 	case ".comp":
 		profile = "cs_" + profileVersion
 	default:
-		return "", fmt.Errorf("unrecognized shader type %s", path)
+		return nil, fmt.Errorf("unrecognized shader type %s", path)
 	}
 
 	cmd.Args = append(cmd.Args,
@@ -65,15 +65,15 @@ func (fxc *FXC) Compile(path, variant string, input []byte, entryPoint string, p
 		if runtime.GOOS != "windows" {
 			info = "If the fxc tool cannot be found, set WINEPATH to the Windows path for the Windows SDK.\n"
 		}
-		return "", fmt.Errorf("%s\n%sfailed to run %v: %w", output, info, cmd.Args, err)
+		return nil, fmt.Errorf("%s\n%sfailed to run %v: %w", output, info, cmd.Args, err)
 	}
 
 	compiled, err := ioutil.ReadFile(result)
 	if err != nil {
-		return "", fmt.Errorf("unable to read output %q: %w", pathout, err)
+		return nil, fmt.Errorf("unable to read output %q: %w", pathout, err)
 	}
 
-	return string(compiled), nil
+	return compiled, nil
 }
 
 // DXC is hlsl compiler that targets ShaderModel 6.0 and newer.

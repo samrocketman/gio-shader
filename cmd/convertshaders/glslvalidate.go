@@ -8,6 +8,7 @@ import (
 	"io/ioutil"
 	"os/exec"
 	"path/filepath"
+	"strings"
 )
 
 // GLSLValidator is OpenGL reference compiler.
@@ -19,21 +20,19 @@ type GLSLValidator struct {
 func NewGLSLValidator() *GLSLValidator { return &GLSLValidator{Bin: "glslangValidator"} }
 
 // Convert converts a glsl shader to spirv.
-func (glsl *GLSLValidator) Convert(path, variant string, hlsl bool, input []byte) ([]byte, error) {
+func (glsl *GLSLValidator) Convert(path, variant string, lang string, input []byte) ([]byte, error) {
 	base := glsl.WorkDir.Path(filepath.Base(path), variant)
 	pathout := base + ".out"
 
 	cmd := exec.Command(glsl.Bin,
 		"--stdin",
+		"-D"+strings.ToUpper(lang),
 		"-I"+filepath.Dir(path),
 		"-V", // OpenGL ES 3.1.
 		"-w", // Suppress warnings.
 		"-S", filepath.Ext(path)[1:],
 		"-o", pathout,
 	)
-	if hlsl {
-		cmd.Args = append(cmd.Args, "-DHLSL")
-	}
 	cmd.Stdin = bytes.NewBuffer(input)
 
 	out, err := cmd.Output()

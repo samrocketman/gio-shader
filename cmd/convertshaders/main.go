@@ -21,6 +21,21 @@ import (
 	"gioui.org/shader"
 )
 
+type shaderSources struct {
+	Name          string
+	GLSL100ES     []byte
+	GLSL300ES     []byte
+	GLSL310ES     []byte
+	GLSL130       []byte
+	GLSL150       []byte
+	DXBC          []byte
+	MetalLibs     MetalLibs
+	Uniforms      shader.UniformsReflection
+	Inputs        []shader.InputLocation
+	Textures      []shader.TextureBinding
+	WorkgroupSize [3]int
+}
+
 func main() {
 	packageName := flag.String("package", "", "specify Go package name")
 	workdir := flag.String("work", "", "temporary working directory (default TEMP)")
@@ -81,6 +96,7 @@ type Converter struct {
 	glslvalidator *GLSLValidator
 	spirv         *SPIRVCross
 	fxc           *FXC
+	msl           *MSL
 }
 
 func NewConverter(workDir WorkDir, packageName, shadersDir string, directCompute bool) *Converter {
@@ -98,6 +114,9 @@ func NewConverter(workDir WorkDir, packageName, shadersDir string, directCompute
 	conv.glslvalidator = NewGLSLValidator()
 	conv.spirv = NewSPIRVCross()
 	conv.fxc = NewFXC()
+	conv.msl = &MSL{
+		WorkDir: workDir.Dir("msl"),
+	}
 
 	verifyBinaryPath(&conv.glslvalidator.Bin)
 	verifyBinaryPath(&conv.spirv.Bin)
@@ -131,7 +150,7 @@ func (conv *Converter) Run(out io.Writer) error {
 
 	type ShaderResult struct {
 		Path    string
-		Shaders []shader.Sources
+		Shaders []shaderSources
 		Error   error
 	}
 	shaderResults := make([]ShaderResult, len(shaders))
@@ -204,13 +223,13 @@ func (conv *Converter) Run(out io.Writer) error {
 			fmt.Fprintf(out, "[...]shader.Sources{\n")
 		}
 
-		writeGenerated := func(src, prefix, path string, idx int) {
+		writeGenerated := func(src []byte, prefix, path string, idx int) {
 			if len(src) == 0 || genErr != nil {
 				return
 			}
 			base := fmt.Sprintf("z%s.%d.%s", filepath.Base(path), idx, strings.ToLower(prefix))
 			p := filepath.Join(filepath.Dir(path), base)
-			genErr = os.WriteFile(p, []byte(src), 0o644)
+			genErr = os.WriteFile(p, src, 0o644)
 		}
 		for i, src := range r.Shaders {
 			fmt.Fprintf(out, "shader.Sources{\n")
@@ -228,12 +247,18 @@ func (conv *Converter) Run(out io.Writer) error {
 			if len(src.Textures) > 0 {
 				fmt.Fprintf(out, "Textures: %#v,\n", src.Textures)
 			}
+			if src.WorkgroupSize != [3]int{} {
+				fmt.Fprintf(out, "WorkgroupSize: %#v,\n", src.WorkgroupSize)
+			}
 			writeGenerated(src.GLSL100ES, "GLSL100ES", r.Path, i)
 			writeGenerated(src.GLSL300ES, "GLSL300ES", r.Path, i)
 			writeGenerated(src.GLSL310ES, "GLSL310ES", r.Path, i)
 			writeGenerated(src.GLSL130, "GLSL130", r.Path, i)
 			writeGenerated(src.GLSL150, "GLSL150", r.Path, i)
 			writeGenerated(src.DXBC, "DXBC", r.Path, i)
+			writeGenerated(src.MetalLibs.MacOS, "MetalLibMacOS", r.Path, i)
+			writeGenerated(src.MetalLibs.IOS, "MetalLibIOS", r.Path, i)
+			writeGenerated(src.MetalLibs.IOSSimulator, "MetalLibIOSSimulator", r.Path, i)
 			fmt.Fprintf(out, "}")
 			if multiVariant {
 				fmt.Fprintf(out, ",")
@@ -243,7 +268,7 @@ func (conv *Converter) Run(out io.Writer) error {
 		if multiVariant {
 			fmt.Fprintf(out, "}\n")
 		}
-		writeEmbedded := func(src, prefix, path string, idx int) {
+		writeEmbedded := func(src []byte, prefix, path string, idx int) {
 			base := fmt.Sprintf("z%s.%d.%s", filepath.Base(path), idx, strings.ToLower(prefix))
 			if _, err := os.Stat(base); err != nil {
 				return
@@ -259,22 +284,25 @@ func (conv *Converter) Run(out io.Writer) error {
 			writeEmbedded(src.GLSL130, "GLSL130", r.Path, i)
 			writeEmbedded(src.GLSL150, "GLSL150", r.Path, i)
 			writeEmbedded(src.DXBC, "DXBC", r.Path, i)
+			writeEmbedded(src.MetalLibs.MacOS, "MetalLibMacOS", r.Path, i)
+			writeEmbedded(src.MetalLibs.IOS, "MetalLibIOS", r.Path, i)
+			writeEmbedded(src.MetalLibs.IOSSimulator, "MetalLibIOSSimulator", r.Path, i)
 		}
 	}
 	fmt.Fprintf(out, ")\n")
-	writeInit := func(src, prefix, path string, idx int, variants bool) {
+	writeInit := func(src []byte, prefix, field, path string, idx int, variants bool) {
 		name := filepath.Base(path)
 		name = strings.ReplaceAll(name, ".", "_")
 		base := fmt.Sprintf("z%s.%d.%s", filepath.Base(path), idx, strings.ToLower(prefix))
 		if _, err := os.Stat(base); err != nil {
 			return
 		}
-		field := strings.ReplaceAll(base, ".", "_")
+		variable := strings.ReplaceAll(base, ".", "_")
 		index := ""
 		if variants {
 			index = fmt.Sprintf("[%d]", idx)
 		}
-		fmt.Fprintf(out, "\t\tShader_%s%s.%s = %s\n", name, index, prefix, field)
+		fmt.Fprintf(out, "\t\tShader_%s%s.%s = %s\n", name, index, field, variable)
 	}
 	fmt.Fprintf(out, "func init() {\n")
 	fmt.Fprintf(out, "\tconst (\n")
@@ -286,16 +314,26 @@ func (conv *Converter) Run(out io.Writer) error {
 		variants := len(r.Shaders) > 1
 		for i, src := range r.Shaders {
 			fmt.Fprintf(out, "\tif opengles {\n")
-			writeInit(src.GLSL100ES, "GLSL100ES", r.Path, i, variants)
-			writeInit(src.GLSL300ES, "GLSL300ES", r.Path, i, variants)
-			writeInit(src.GLSL310ES, "GLSL310ES", r.Path, i, variants)
+			writeInit(src.GLSL100ES, "GLSL100ES", "GLSL100ES", r.Path, i, variants)
+			writeInit(src.GLSL300ES, "GLSL300ES", "GLSL300ES", r.Path, i, variants)
+			writeInit(src.GLSL310ES, "GLSL310ES", "GLSL310ES", r.Path, i, variants)
 			fmt.Fprintf(out, "\t}\n")
 			fmt.Fprintf(out, "\tif opengl {\n")
-			writeInit(src.GLSL130, "GLSL130", r.Path, i, variants)
-			writeInit(src.GLSL150, "GLSL150", r.Path, i, variants)
+			writeInit(src.GLSL130, "GLSL130", "GLSL130", r.Path, i, variants)
+			writeInit(src.GLSL150, "GLSL150", "GLSL150", r.Path, i, variants)
 			fmt.Fprintf(out, "\t}\n")
 			fmt.Fprintf(out, "\tif d3d11 {\n")
-			writeInit(src.DXBC, "DXBC", r.Path, i, variants)
+			writeInit(src.DXBC, "DXBC", "DXBC", r.Path, i, variants)
+			fmt.Fprintf(out, "\t}\n")
+			fmt.Fprintf(out, "\tif runtime.GOOS == \"darwin\" {\n")
+			writeInit(src.MetalLibs.MacOS, "MetalLibMacOS", "MetalLib", r.Path, i, variants)
+			fmt.Fprintf(out, "\t}\n")
+			fmt.Fprintf(out, "\tif runtime.GOOS == \"ios\" {\n")
+			fmt.Fprintf(out, "if runtime.GOARCH == \"amd64\" {\n")
+			writeInit(src.MetalLibs.IOSSimulator, "MetalLibIOSSimulator", "MetalLib", r.Path, i, variants)
+			fmt.Fprintf(out, "\t\t} else {\n")
+			writeInit(src.MetalLibs.IOS, "MetalLibIOS", "MetalLib", r.Path, i, variants)
+			fmt.Fprintf(out, "\t\t}\n")
 			fmt.Fprintf(out, "\t}\n")
 		}
 	}
@@ -312,7 +350,7 @@ func geeseExpr(geese ...string) string {
 	return strings.Join(checks, " || ")
 }
 
-func (conv *Converter) Shader(shaderPath string) ([]shader.Sources, error) {
+func (conv *Converter) Shader(shaderPath string) ([]shaderSources, error) {
 	type Variant struct {
 		FetchColorExpr string
 		Header         string
@@ -337,7 +375,7 @@ func (conv *Converter) Shader(shaderPath string) ([]shader.Sources, error) {
 		return nil, fmt.Errorf("failed to parse template %q: %w", shaderPath, err)
 	}
 
-	var variants []shader.Sources
+	var variants []shaderSources
 	for i, variantArg := range variantArgs {
 		variantName := strconv.Itoa(i)
 		var buf bytes.Buffer
@@ -346,7 +384,7 @@ func (conv *Converter) Shader(shaderPath string) ([]shader.Sources, error) {
 			return nil, fmt.Errorf("failed to execute template %q with %#v: %w", shaderPath, variantArg, err)
 		}
 
-		var sources shader.Sources
+		var sources shaderSources
 		sources.Name = filepath.Base(shaderPath)
 
 		// Ignore error; some shaders are not meant to run in GLSL 1.00.
@@ -356,6 +394,23 @@ func (conv *Converter) Shader(shaderPath string) ([]shader.Sources, error) {
 		sources.GLSL300ES, metadata, err = conv.ShaderVariant(shaderPath, variantName, buf.Bytes(), "es", "300")
 		if err != nil {
 			return nil, fmt.Errorf("failed to convert GLSL300ES:\n%w", err)
+		}
+
+		metal, _, err := conv.ShaderVariant(shaderPath, variantName, buf.Bytes(), "msl", "10000")
+		if err != nil {
+			return nil, fmt.Errorf("failed to convert to Metal:\n%w", err)
+		}
+
+		metalIOS, _, err := conv.ShaderVariant(shaderPath, variantName, buf.Bytes(), "mslios", "10000")
+		if err != nil {
+			return nil, fmt.Errorf("failed to convert to Metal:\n%w", err)
+		}
+
+		sources.MetalLibs, err = conv.msl.Compile(shaderPath, variantName, metal, metalIOS)
+		if err != nil {
+			if !errors.Is(err, exec.ErrNotFound) {
+				return nil, fmt.Errorf("failed to build .metallib library:\n%w", err)
+			}
 		}
 
 		sources.GLSL130, _, err = conv.ShaderVariant(shaderPath, variantName, buf.Bytes(), "glsl", "130")
@@ -388,56 +443,81 @@ func (conv *Converter) Shader(shaderPath string) ([]shader.Sources, error) {
 		sources.Uniforms = metadata.Uniforms
 		sources.Inputs = metadata.Inputs
 		sources.Textures = metadata.Textures
+		sources.WorkgroupSize = metadata.WorkgroupSize
 
 		variants = append(variants, sources)
 	}
 
 	// If the shader don't use the variant arguments, output only a single version.
-	if variants[0].GLSL100ES == variants[1].GLSL100ES {
+	if bytes.Equal(variants[0].GLSL100ES, variants[1].GLSL100ES) {
 		variants = variants[:1]
 	}
 
 	return variants, nil
 }
 
-func (conv *Converter) ShaderVariant(shaderPath, variant string, src []byte, lang, profile string) (string, Metadata, error) {
-	spirv, err := conv.glslvalidator.Convert(shaderPath, variant, lang == "hlsl", src)
+func (conv *Converter) ShaderVariant(shaderPath, variant string, src []byte, lang, profile string) ([]byte, Metadata, error) {
+	spirv, err := conv.glslvalidator.Convert(shaderPath, variant, lang, src)
 	if err != nil {
-		return "", Metadata{}, fmt.Errorf("failed to generate SPIR-V for %q: %w", shaderPath, err)
+		return nil, Metadata{}, fmt.Errorf("failed to generate SPIR-V for %q: %w", shaderPath, err)
 	}
 
 	dst, err := conv.spirv.Convert(shaderPath, variant, spirv, lang, profile)
 	if err != nil {
-		return "", Metadata{}, fmt.Errorf("failed to convert shader %q: %w", shaderPath, err)
+		return nil, Metadata{}, fmt.Errorf("failed to convert shader %q: %w", shaderPath, err)
 	}
 
 	meta, err := conv.spirv.Metadata(shaderPath, variant, spirv)
 	if err != nil {
-		return "", Metadata{}, fmt.Errorf("failed to extract metadata for shader %q: %w", shaderPath, err)
+		return nil, Metadata{}, fmt.Errorf("failed to extract metadata for shader %q: %w", shaderPath, err)
 	}
 
 	return dst, meta, nil
 }
 
-func (conv *Converter) ComputeShader(shaderPath string) ([]shader.Sources, error) {
+func (conv *Converter) ComputeShader(shaderPath string) ([]shaderSources, error) {
 	sh, err := ioutil.ReadFile(shaderPath)
 	if err != nil {
 		return nil, fmt.Errorf("failed to load shader %q: %w", shaderPath, err)
 	}
 
-	spirv, err := conv.glslvalidator.Convert(shaderPath, "", false, sh)
+	spirv, err := conv.glslvalidator.Convert(shaderPath, "", "glsl", sh)
 	if err != nil {
 		return nil, fmt.Errorf("failed to convert compute shader %q: %w", shaderPath, err)
 	}
 
-	var sources shader.Sources
+	meta, err := conv.spirv.Metadata(shaderPath, "", spirv)
+	if err != nil {
+		return nil, fmt.Errorf("failed to extract metadata for shader %q: %w", shaderPath, err)
+	}
+
+	var sources shaderSources
 	sources.Name = filepath.Base(shaderPath)
+	sources.WorkgroupSize = meta.WorkgroupSize
 
 	sources.GLSL310ES, err = conv.spirv.Convert(shaderPath, "", spirv, "es", "310")
 	if err != nil {
 		return nil, fmt.Errorf("failed to convert es compute shader %q: %w", shaderPath, err)
 	}
 	sources.GLSL310ES = unixLineEnding(sources.GLSL310ES)
+
+	metal, err := conv.spirv.Convert(shaderPath, "", spirv, "msl", "10000")
+	if err != nil {
+		return nil, fmt.Errorf("failed to convert GLSL130:\n%w", err)
+	}
+
+	metalIOS, err := conv.spirv.Convert(shaderPath, "", spirv, "mslios", "10000")
+	if err != nil {
+		return nil, fmt.Errorf("failed to convert GLSL130:\n%w", err)
+	}
+
+	metalLibs, err := conv.msl.Compile(shaderPath, "", metal, metalIOS)
+	if err != nil {
+		if !errors.Is(err, exec.ErrNotFound) {
+			return nil, fmt.Errorf("failed to build .metallib library:\n%w", err)
+		}
+	}
+	sources.MetalLibs = metalLibs
 
 	hlslSource, err := conv.spirv.Convert(shaderPath, "", spirv, "hlsl", "50")
 	if err != nil {
@@ -454,7 +534,7 @@ func (conv *Converter) ComputeShader(shaderPath string) ([]shader.Sources, error
 		sources.DXBC = dxil
 	}
 
-	return []shader.Sources{sources}, nil
+	return []shaderSources{sources}, nil
 }
 
 // Workers implements wait group with synchronous logging.
@@ -474,6 +554,6 @@ func (lg *Workers) Wait() {
 	lg.running.Wait()
 }
 
-func unixLineEnding(s string) string {
-	return strings.ReplaceAll(s, "\r\n", "\n")
+func unixLineEnding(s []byte) []byte {
+	return bytes.ReplaceAll(s, []byte("\r\n"), []byte("\n"))
 }

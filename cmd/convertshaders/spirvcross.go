@@ -15,9 +15,10 @@ import (
 
 // Metadata contains reflection data about a shader.
 type Metadata struct {
-	Uniforms shader.UniformsReflection
-	Inputs   []shader.InputLocation
-	Textures []shader.TextureBinding
+	Uniforms      shader.UniformsReflection
+	Inputs        []shader.InputLocation
+	Textures      []shader.TextureBinding
+	WorkgroupSize [3]int
 }
 
 // SPIRVCross cross-compiles spirv shaders to es, hlsl and others.
@@ -29,11 +30,11 @@ type SPIRVCross struct {
 func NewSPIRVCross() *SPIRVCross { return &SPIRVCross{Bin: "spirv-cross"} }
 
 // Convert converts compute shader from spirv format to a target format.
-func (spirv *SPIRVCross) Convert(path, variant string, shader []byte, target, version string) (string, error) {
+func (spirv *SPIRVCross) Convert(path, variant string, shader []byte, target, version string) ([]byte, error) {
 	base := spirv.WorkDir.Path(filepath.Base(path), variant)
 
 	if err := spirv.WorkDir.WriteFile(base, shader); err != nil {
-		return "", fmt.Errorf("unable to write shader to disk: %w", err)
+		return nil, fmt.Errorf("unable to write shader to disk: %w", err)
 	}
 
 	var cmd *exec.Cmd
@@ -53,27 +54,30 @@ func (spirv *SPIRVCross) Convert(path, variant string, shader []byte, target, ve
 			"--hlsl",
 			"--shader-model", version,
 		)
-	case "msl":
+	case "msl", "mslios":
 		cmd = exec.Command(spirv.Bin,
 			"--msl",
+			"--msl-decoration-binding",
 			"--msl-version", version,
 		)
+		if target == "mslios" {
+			cmd.Args = append(cmd.Args, "--msl-ios")
+		}
 	default:
-		return "", fmt.Errorf("unknown target %q", target)
+		return nil, fmt.Errorf("unknown target %q", target)
 	}
 	cmd.Args = append(cmd.Args, "--no-420pack-extension", base)
 
 	out, err := cmd.CombinedOutput()
 	if err != nil {
-		return "", fmt.Errorf("%s\nfailed to run %v: %w", out, cmd.Args, err)
+		return nil, fmt.Errorf("%s\nfailed to run %v: %w", out, cmd.Args, err)
 	}
-	s := string(out)
 	if target != "hlsl" {
 		// Strip Windows \r in line endings.
-		s = unixLineEnding(s)
+		out = unixLineEnding(out)
 	}
 
-	return s, nil
+	return out, nil
 }
 
 // Metadata extracts metadata for a SPIR-V shader.
@@ -130,6 +134,11 @@ func parseMetadata(data []byte) (Metadata, error) {
 			Set       int    `json:"set"`
 			Binding   int    `json:"binding"`
 		} `json:"ubos"`
+		EntryPoints []struct {
+			Name          string `json:"name"`
+			Mode          string `json:"mode"`
+			WorkgroupSize [3]int `json:"workgroup_size"`
+		} `json:"entryPoints"`
 	}
 	if err := json.Unmarshal(data, &reflect); err != nil {
 		return Metadata{}, fmt.Errorf("failed to parse reflection data: %w", err)
@@ -189,7 +198,12 @@ func parseMetadata(data []byte) (Metadata, error) {
 		})
 	}
 
-	//return m, fmt.Errorf("not yet!: %+v", reflect)
+	for _, e := range reflect.EntryPoints {
+		if e.Name == "main" && e.Mode == "comp" {
+			m.WorkgroupSize = e.WorkgroupSize
+		}
+	}
+
 	return m, nil
 }
 
