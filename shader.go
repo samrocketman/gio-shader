@@ -50,13 +50,6 @@ type InputLocation struct {
 	Size int
 }
 
-// InputDesc describes a vertex attribute as laid out in a Buffer.
-type InputDesc struct {
-	Type DataType
-	Size int
-
-	Offset int
-}
 type DataType uint8
 
 type DepthFunc uint8
