@@ -278,7 +278,7 @@ func (conv *Converter) Run(out io.Writer) error {
 	}
 	fmt.Fprintf(out, "func init() {\n")
 	fmt.Fprintf(out, "\tconst (\n")
-	fmt.Fprintf(out, "\t\topengles = %s\n", geeseExpr("linux", "freebsd", "openbsd", "windows", "js", "android", "ios"))
+	fmt.Fprintf(out, "\t\topengles = %s\n", geeseExpr("linux", "freebsd", "openbsd", "windows", "js", "android", "darwin", "ios"))
 	fmt.Fprintf(out, "\t\topengl = %s\n", geeseExpr("darwin"))
 	fmt.Fprintf(out, "\t\td3d11 = %s\n", geeseExpr("windows"))
 	fmt.Fprintf(out, "\t)\n")
