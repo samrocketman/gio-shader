@@ -5,8 +5,10 @@ package main
 import (
 	"fmt"
 	"io/ioutil"
+	"os"
 	"os/exec"
 	"path/filepath"
+	"runtime"
 )
 
 // MSL is hlsl compiler that targets the Metal shading language
@@ -55,8 +57,36 @@ func (msl *MSL) Compile(path, variant string, src, srcIOS []byte) (MetalLibs, er
 // compileFor compiles the input .metal program and converts it into a
 // .metallib library for a particular SDK.
 func (msl *MSL) compileFor(sdk, minVer, path string) ([]byte, error) {
-	metal := exec.Command("xcrun", "--sdk", sdk, "metal")
+	var metal *exec.Cmd
+
 	pathout := path + ".metallib"
+	result := pathout
+
+	if runtime.GOOS == "darwin" {
+		metal = exec.Command("xcrun", "--sdk", sdk, "metal")
+	} else {
+		sdkDir := os.Getenv("METAL_SDK_ROOT")
+		if sdkDir == "" {
+			return nil, exec.ErrNotFound
+		}
+		switch sdk {
+		case "macosx":
+			sdkDir = filepath.Join(sdkDir, "macos")
+		case "iphoneos", "iphonesimulator":
+			sdkDir = filepath.Join(sdkDir, "ios")
+		default:
+			panic("unknown sdk")
+		}
+		bin := filepath.Join(sdkDir, "bin", "metal.exe")
+		if runtime.GOOS == "windows" {
+			metal = exec.Command(bin)
+		} else {
+			if err := winepath(&path, &pathout); err != nil {
+				return nil, err
+			}
+			metal = exec.Command("wine", bin)
+		}
+	}
 
 	metal.Args = append(metal.Args,
 		minVer,
@@ -69,7 +99,7 @@ func (msl *MSL) compileFor(sdk, minVer, path string) ([]byte, error) {
 		return nil, fmt.Errorf("%s\nfailed to run %v: %w", output, metal.Args, err)
 	}
 
-	compiled, err := ioutil.ReadFile(pathout)
+	compiled, err := ioutil.ReadFile(result)
 	if err != nil {
 		return nil, fmt.Errorf("unable to read output %q: %w", pathout, err)
 	}

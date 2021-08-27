@@ -120,7 +120,7 @@ func NewConverter(workDir WorkDir, packageName, shadersDir string, directCompute
 
 	verifyBinaryPath(&conv.glslvalidator.Bin)
 	verifyBinaryPath(&conv.spirv.Bin)
-	// We cannot check fxc since it may depend on wine.
+	// We cannot check fxc nor msl since they may depend on wine.
 
 	conv.glslvalidator.WorkDir = workDir.Dir("glslvalidator")
 	conv.fxc.WorkDir = workDir.Dir("fxc")
