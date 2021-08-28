@@ -16,6 +16,8 @@ var (
 	}
 	//go:embed zbackdrop.comp.0.glsl310es
 	zbackdrop_comp_0_glsl310es string
+	//go:embed zbackdrop.comp.0.dxbc
+	zbackdrop_comp_0_dxbc string
 	//go:embed zbackdrop.comp.0.metallibmacos
 	zbackdrop_comp_0_metallibmacos string
 	//go:embed zbackdrop.comp.0.metallibios
@@ -28,6 +30,8 @@ var (
 	}
 	//go:embed zbinning.comp.0.glsl310es
 	zbinning_comp_0_glsl310es string
+	//go:embed zbinning.comp.0.dxbc
+	zbinning_comp_0_dxbc string
 	//go:embed zbinning.comp.0.metallibmacos
 	zbinning_comp_0_metallibmacos string
 	//go:embed zbinning.comp.0.metallibios
@@ -40,6 +44,8 @@ var (
 	}
 	//go:embed zcoarse.comp.0.glsl310es
 	zcoarse_comp_0_glsl310es string
+	//go:embed zcoarse.comp.0.dxbc
+	zcoarse_comp_0_dxbc string
 	//go:embed zcoarse.comp.0.metallibmacos
 	zcoarse_comp_0_metallibmacos string
 	//go:embed zcoarse.comp.0.metallibios
@@ -52,6 +58,8 @@ var (
 	}
 	//go:embed zelements.comp.0.glsl310es
 	zelements_comp_0_glsl310es string
+	//go:embed zelements.comp.0.dxbc
+	zelements_comp_0_dxbc string
 	//go:embed zelements.comp.0.metallibmacos
 	zelements_comp_0_metallibmacos string
 	//go:embed zelements.comp.0.metallibios
@@ -64,6 +72,8 @@ var (
 	}
 	//go:embed zkernel4.comp.0.glsl310es
 	zkernel4_comp_0_glsl310es string
+	//go:embed zkernel4.comp.0.dxbc
+	zkernel4_comp_0_dxbc string
 	//go:embed zkernel4.comp.0.metallibmacos
 	zkernel4_comp_0_metallibmacos string
 	//go:embed zkernel4.comp.0.metallibios
@@ -76,6 +86,8 @@ var (
 	}
 	//go:embed zpath_coarse.comp.0.glsl310es
 	zpath_coarse_comp_0_glsl310es string
+	//go:embed zpath_coarse.comp.0.dxbc
+	zpath_coarse_comp_0_dxbc string
 	//go:embed zpath_coarse.comp.0.metallibmacos
 	zpath_coarse_comp_0_metallibmacos string
 	//go:embed zpath_coarse.comp.0.metallibios
@@ -88,6 +100,8 @@ var (
 	}
 	//go:embed ztile_alloc.comp.0.glsl310es
 	ztile_alloc_comp_0_glsl310es string
+	//go:embed ztile_alloc.comp.0.dxbc
+	ztile_alloc_comp_0_dxbc string
 	//go:embed ztile_alloc.comp.0.metallibmacos
 	ztile_alloc_comp_0_metallibmacos string
 	//go:embed ztile_alloc.comp.0.metallibios
@@ -108,6 +122,7 @@ func init() {
 	if opengl {
 	}
 	if d3d11 {
+		Shader_backdrop_comp.DXBC = zbackdrop_comp_0_dxbc
 	}
 	if runtime.GOOS == "darwin" {
 		Shader_backdrop_comp.MetalLib = zbackdrop_comp_0_metallibmacos
@@ -125,6 +140,7 @@ func init() {
 	if opengl {
 	}
 	if d3d11 {
+		Shader_binning_comp.DXBC = zbinning_comp_0_dxbc
 	}
 	if runtime.GOOS == "darwin" {
 		Shader_binning_comp.MetalLib = zbinning_comp_0_metallibmacos
@@ -142,6 +158,7 @@ func init() {
 	if opengl {
 	}
 	if d3d11 {
+		Shader_coarse_comp.DXBC = zcoarse_comp_0_dxbc
 	}
 	if runtime.GOOS == "darwin" {
 		Shader_coarse_comp.MetalLib = zcoarse_comp_0_metallibmacos
@@ -159,6 +176,7 @@ func init() {
 	if opengl {
 	}
 	if d3d11 {
+		Shader_elements_comp.DXBC = zelements_comp_0_dxbc
 	}
 	if runtime.GOOS == "darwin" {
 		Shader_elements_comp.MetalLib = zelements_comp_0_metallibmacos
@@ -176,6 +194,7 @@ func init() {
 	if opengl {
 	}
 	if d3d11 {
+		Shader_kernel4_comp.DXBC = zkernel4_comp_0_dxbc
 	}
 	if runtime.GOOS == "darwin" {
 		Shader_kernel4_comp.MetalLib = zkernel4_comp_0_metallibmacos
@@ -193,6 +212,7 @@ func init() {
 	if opengl {
 	}
 	if d3d11 {
+		Shader_path_coarse_comp.DXBC = zpath_coarse_comp_0_dxbc
 	}
 	if runtime.GOOS == "darwin" {
 		Shader_path_coarse_comp.MetalLib = zpath_coarse_comp_0_metallibmacos
@@ -210,6 +230,7 @@ func init() {
 	if opengl {
 	}
 	if d3d11 {
+		Shader_tile_alloc_comp.DXBC = ztile_alloc_comp_0_dxbc
 	}
 	if runtime.GOOS == "darwin" {
 		Shader_tile_alloc_comp.MetalLib = ztile_alloc_comp_0_metallibmacos

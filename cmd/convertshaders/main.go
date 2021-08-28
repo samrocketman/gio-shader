@@ -40,7 +40,6 @@ func main() {
 	packageName := flag.String("package", "", "specify Go package name")
 	workdir := flag.String("work", "", "temporary working directory (default TEMP)")
 	shadersDir := flag.String("dir", "shaders", "shaders directory")
-	directCompute := flag.Bool("directcompute", false, "enable compiling DirectCompute shaders")
 
 	flag.Parse()
 
@@ -64,7 +63,7 @@ func main() {
 	}
 
 	var out bytes.Buffer
-	conv := NewConverter(work, *packageName, *shadersDir, *directCompute)
+	conv := NewConverter(work, *packageName, *shadersDir)
 	if err := conv.Run(&out); err != nil {
 		fmt.Fprintf(os.Stderr, "%v\n", err)
 		cleanup()
@@ -87,9 +86,8 @@ func main() {
 }
 
 type Converter struct {
-	workDir       WorkDir
-	shadersDir    string
-	directCompute bool
+	workDir    WorkDir
+	shadersDir string
 
 	packageName string
 
@@ -99,7 +97,7 @@ type Converter struct {
 	msl           *MSL
 }
 
-func NewConverter(workDir WorkDir, packageName, shadersDir string, directCompute bool) *Converter {
+func NewConverter(workDir WorkDir, packageName, shadersDir string) *Converter {
 	if abs, err := filepath.Abs(shadersDir); err == nil {
 		shadersDir = abs
 	}
@@ -107,7 +105,6 @@ func NewConverter(workDir WorkDir, packageName, shadersDir string, directCompute
 	conv := &Converter{}
 	conv.workDir = workDir
 	conv.shadersDir = shadersDir
-	conv.directCompute = directCompute
 
 	conv.packageName = packageName
 
@@ -530,9 +527,7 @@ func (conv *Converter) ComputeShader(shaderPath string) ([]shaderSources, error)
 			return nil, fmt.Errorf("failed to compile hlsl compute shader %q: %w", shaderPath, err)
 		}
 	}
-	if conv.directCompute {
-		sources.DXBC = dxil
-	}
+	sources.DXBC = dxil
 
 	return []shaderSources{sources}, nil
 }
