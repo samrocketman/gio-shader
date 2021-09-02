@@ -14,6 +14,8 @@ var (
 		Name:          "backdrop.comp",
 		WorkgroupSize: [3]int{128, 1, 1},
 	}
+	//go:embed zbackdrop.comp.0.spirv
+	zbackdrop_comp_0_spirv string
 	//go:embed zbackdrop.comp.0.glsl310es
 	zbackdrop_comp_0_glsl310es string
 	//go:embed zbackdrop.comp.0.dxbc
@@ -28,6 +30,8 @@ var (
 		Name:          "binning.comp",
 		WorkgroupSize: [3]int{128, 1, 1},
 	}
+	//go:embed zbinning.comp.0.spirv
+	zbinning_comp_0_spirv string
 	//go:embed zbinning.comp.0.glsl310es
 	zbinning_comp_0_glsl310es string
 	//go:embed zbinning.comp.0.dxbc
@@ -42,6 +46,8 @@ var (
 		Name:          "coarse.comp",
 		WorkgroupSize: [3]int{128, 1, 1},
 	}
+	//go:embed zcoarse.comp.0.spirv
+	zcoarse_comp_0_spirv string
 	//go:embed zcoarse.comp.0.glsl310es
 	zcoarse_comp_0_glsl310es string
 	//go:embed zcoarse.comp.0.dxbc
@@ -56,6 +62,8 @@ var (
 		Name:          "elements.comp",
 		WorkgroupSize: [3]int{32, 1, 1},
 	}
+	//go:embed zelements.comp.0.spirv
+	zelements_comp_0_spirv string
 	//go:embed zelements.comp.0.glsl310es
 	zelements_comp_0_glsl310es string
 	//go:embed zelements.comp.0.dxbc
@@ -70,6 +78,8 @@ var (
 		Name:          "kernel4.comp",
 		WorkgroupSize: [3]int{16, 8, 1},
 	}
+	//go:embed zkernel4.comp.0.spirv
+	zkernel4_comp_0_spirv string
 	//go:embed zkernel4.comp.0.glsl310es
 	zkernel4_comp_0_glsl310es string
 	//go:embed zkernel4.comp.0.dxbc
@@ -84,6 +94,8 @@ var (
 		Name:          "path_coarse.comp",
 		WorkgroupSize: [3]int{32, 1, 1},
 	}
+	//go:embed zpath_coarse.comp.0.spirv
+	zpath_coarse_comp_0_spirv string
 	//go:embed zpath_coarse.comp.0.glsl310es
 	zpath_coarse_comp_0_glsl310es string
 	//go:embed zpath_coarse.comp.0.dxbc
@@ -98,6 +110,8 @@ var (
 		Name:          "tile_alloc.comp",
 		WorkgroupSize: [3]int{128, 1, 1},
 	}
+	//go:embed ztile_alloc.comp.0.spirv
+	ztile_alloc_comp_0_spirv string
 	//go:embed ztile_alloc.comp.0.glsl310es
 	ztile_alloc_comp_0_glsl310es string
 	//go:embed ztile_alloc.comp.0.dxbc
@@ -115,7 +129,11 @@ func init() {
 		opengles = runtime.GOOS == "linux" || runtime.GOOS == "freebsd" || runtime.GOOS == "openbsd" || runtime.GOOS == "windows" || runtime.GOOS == "js" || runtime.GOOS == "android" || runtime.GOOS == "darwin" || runtime.GOOS == "ios"
 		opengl   = runtime.GOOS == "darwin"
 		d3d11    = runtime.GOOS == "windows"
+		vulkan   = runtime.GOOS == "linux" || runtime.GOOS == "android"
 	)
+	if vulkan {
+		Shader_backdrop_comp.SPIRV = zbackdrop_comp_0_spirv
+	}
 	if opengles {
 		Shader_backdrop_comp.GLSL310ES = zbackdrop_comp_0_glsl310es
 	}
@@ -133,6 +151,9 @@ func init() {
 		} else {
 			Shader_backdrop_comp.MetalLib = zbackdrop_comp_0_metallibios
 		}
+	}
+	if vulkan {
+		Shader_binning_comp.SPIRV = zbinning_comp_0_spirv
 	}
 	if opengles {
 		Shader_binning_comp.GLSL310ES = zbinning_comp_0_glsl310es
@@ -152,6 +173,9 @@ func init() {
 			Shader_binning_comp.MetalLib = zbinning_comp_0_metallibios
 		}
 	}
+	if vulkan {
+		Shader_coarse_comp.SPIRV = zcoarse_comp_0_spirv
+	}
 	if opengles {
 		Shader_coarse_comp.GLSL310ES = zcoarse_comp_0_glsl310es
 	}
@@ -169,6 +193,9 @@ func init() {
 		} else {
 			Shader_coarse_comp.MetalLib = zcoarse_comp_0_metallibios
 		}
+	}
+	if vulkan {
+		Shader_elements_comp.SPIRV = zelements_comp_0_spirv
 	}
 	if opengles {
 		Shader_elements_comp.GLSL310ES = zelements_comp_0_glsl310es
@@ -188,6 +215,9 @@ func init() {
 			Shader_elements_comp.MetalLib = zelements_comp_0_metallibios
 		}
 	}
+	if vulkan {
+		Shader_kernel4_comp.SPIRV = zkernel4_comp_0_spirv
+	}
 	if opengles {
 		Shader_kernel4_comp.GLSL310ES = zkernel4_comp_0_glsl310es
 	}
@@ -206,6 +236,9 @@ func init() {
 			Shader_kernel4_comp.MetalLib = zkernel4_comp_0_metallibios
 		}
 	}
+	if vulkan {
+		Shader_path_coarse_comp.SPIRV = zpath_coarse_comp_0_spirv
+	}
 	if opengles {
 		Shader_path_coarse_comp.GLSL310ES = zpath_coarse_comp_0_glsl310es
 	}
@@ -223,6 +256,9 @@ func init() {
 		} else {
 			Shader_path_coarse_comp.MetalLib = zpath_coarse_comp_0_metallibios
 		}
+	}
+	if vulkan {
+		Shader_tile_alloc_comp.SPIRV = ztile_alloc_comp_0_spirv
 	}
 	if opengles {
 		Shader_tile_alloc_comp.GLSL310ES = ztile_alloc_comp_0_glsl310es

@@ -1,10 +1,12 @@
 #version 150
 
-layout(std140) uniform Block
+struct Block
 {
     vec4 transform;
     vec2 pathOffset;
-} _block;
+};
+
+uniform Block _block;
 
 in vec2 from;
 in vec2 ctrl;

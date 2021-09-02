@@ -4,6 +4,7 @@ package shader
 
 type Sources struct {
 	Name          string
+	SPIRV         string
 	GLSL100ES     string
 	GLSL310ES     string
 	GLSL150       string
@@ -16,17 +17,11 @@ type Sources struct {
 }
 
 type UniformsReflection struct {
-	Blocks    []UniformBlock
 	Locations []UniformLocation
 	Size      int
 }
 
 type TextureBinding struct {
-	Name    string
-	Binding int
-}
-
-type UniformBlock struct {
 	Name    string
 	Binding int
 }

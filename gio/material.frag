@@ -6,14 +6,14 @@ precision mediump float;
 
 layout(binding = 0) uniform sampler2D tex;
 
-layout(location = 0) in vec2 vUV;
+layout(location = 0) in highp vec2 vUV;
 
 layout(location = 0) out vec4 fragColor;
 
-layout(binding=0) uniform Color {
+layout(push_constant) uniform Color {
 	// If emulateSRGB is set (!= 0), the input texels are sRGB encoded. We save the
 	// conversion step below, at the cost of texture filtering in sRGB space.
-	float emulateSRGB;
+	layout(offset=16) float emulateSRGB;
 } _color;
 
 vec3 RGBtosRGB(vec3 rgb) {

@@ -9,7 +9,7 @@ struct Color
 
 uniform Color _color;
 
-varying vec2 vUV;
+varying highp vec2 vUV;
 
 void main()
 {

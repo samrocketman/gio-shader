@@ -2,9 +2,9 @@
 precision mediump float;
 precision highp int;
 
-varying vec2 vTo;
-varying vec2 vFrom;
-varying vec2 vCtrl;
+varying highp vec2 vTo;
+varying highp vec2 vFrom;
+varying highp vec2 vCtrl;
 
 void main()
 {

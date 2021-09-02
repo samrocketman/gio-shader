@@ -1,10 +1,12 @@
 #version 150
 
-layout(std140) uniform Gradient
+struct Gradient
 {
     vec4 color1;
     vec4 color2;
-} _gradient;
+};
+
+uniform Gradient _gradient;
 
 out vec4 fragColor;
 in vec2 vUV;

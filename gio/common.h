@@ -11,7 +11,7 @@ struct m3x2 {
 // Only two rows are returned. The last is implied
 // to be [0, 0, 1].
 const m3x2 fboTextureTransform = m3x2(
-#if defined(HLSL) || defined(MSL) || defined(MSLIOS)
+#if defined(LANG_HLSL) || defined(LANG_MSL) || defined(LANG_MSLIOS) || defined(LANG_VULKAN)
 	vec3(1.0, 0.0, 0.0),
 	vec3(0.0, -1.0, 1.0)
 #else
@@ -26,7 +26,7 @@ const m3x2 fboTextureTransform = m3x2(
 // Only two rows are returned. The last is implied
 // to be [0, 0, 1].
 const m3x2 fboTransform = m3x2(
-#if defined(HLSL) || defined(MSL) || defined(MSLIOS)
+#if defined(LANG_HLSL) || defined(LANG_MSL) || defined(LANG_MSLIOS) || defined(LANG_VULKAN)
 	vec3(1.0, 0.0, 0.0),
 	vec3(0.0, 1.0, 0.0)
 #else
@@ -38,7 +38,7 @@ const m3x2 fboTransform = m3x2(
 // toClipSpace converts an OpenGL gl_Position value to a
 // native GPU position.
 vec4 toClipSpace(vec4 pos) {
-#if defined(HLSL) || defined(MSL) || defined(MSLIOS)
+#if defined(LANG_HLSL) || defined(LANG_MSL) || defined(LANG_MSLIOS) || defined(LANG_VULKAN)
 	// Map depths to the Direct3D, Metal [0; 1] range.
 	return vec4(pos.xy, (pos.z + pos.w)*.5, pos.w);
 #else

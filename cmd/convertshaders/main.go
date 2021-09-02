@@ -23,6 +23,7 @@ import (
 
 type shaderSources struct {
 	Name          string
+	SPIRV         []byte
 	GLSL100ES     []byte
 	GLSL310ES     []byte
 	GLSL150       []byte
@@ -232,9 +233,8 @@ func (conv *Converter) Run(out io.Writer) error {
 			if len(src.Inputs) > 0 {
 				fmt.Fprintf(out, "Inputs: %#v,\n", src.Inputs)
 			}
-			if u := src.Uniforms; len(u.Blocks) > 0 {
+			if u := src.Uniforms; u.Size > 0 {
 				fmt.Fprintf(out, "Uniforms: shader.UniformsReflection{\n")
-				fmt.Fprintf(out, "Blocks: %#v,\n", u.Blocks)
 				fmt.Fprintf(out, "Locations: %#v,\n", u.Locations)
 				fmt.Fprintf(out, "Size: %d,\n", u.Size)
 				fmt.Fprintf(out, "},\n")
@@ -245,6 +245,7 @@ func (conv *Converter) Run(out io.Writer) error {
 			if src.WorkgroupSize != [3]int{} {
 				fmt.Fprintf(out, "WorkgroupSize: %#v,\n", src.WorkgroupSize)
 			}
+			writeGenerated(src.SPIRV, "SPIRV", r.Path, i)
 			writeGenerated(src.GLSL100ES, "GLSL100ES", r.Path, i)
 			writeGenerated(src.GLSL310ES, "GLSL310ES", r.Path, i)
 			writeGenerated(src.GLSL150, "GLSL150", r.Path, i)
@@ -271,6 +272,7 @@ func (conv *Converter) Run(out io.Writer) error {
 			fmt.Fprintf(out, "%s string\n", field)
 		}
 		for i, src := range r.Shaders {
+			writeEmbedded(src.SPIRV, "SPIRV", r.Path, i)
 			writeEmbedded(src.GLSL100ES, "GLSL100ES", r.Path, i)
 			writeEmbedded(src.GLSL310ES, "GLSL310ES", r.Path, i)
 			writeEmbedded(src.GLSL150, "GLSL150", r.Path, i)
@@ -300,10 +302,14 @@ func (conv *Converter) Run(out io.Writer) error {
 	fmt.Fprintf(out, "\t\topengles = %s\n", geeseExpr("linux", "freebsd", "openbsd", "windows", "js", "android", "darwin", "ios"))
 	fmt.Fprintf(out, "\t\topengl = %s\n", geeseExpr("darwin"))
 	fmt.Fprintf(out, "\t\td3d11 = %s\n", geeseExpr("windows"))
+	fmt.Fprintf(out, "\t\tvulkan = %s\n", geeseExpr("linux", "android"))
 	fmt.Fprintf(out, "\t)\n")
 	for _, r := range shaderResults {
 		variants := len(r.Shaders) > 1
 		for i, src := range r.Shaders {
+			fmt.Fprintf(out, "\tif vulkan {\n")
+			writeInit(src.SPIRV, "SPIRV", "SPIRV", r.Path, i, variants)
+			fmt.Fprintf(out, "\t}\n")
 			fmt.Fprintf(out, "\tif opengles {\n")
 			writeInit(src.GLSL100ES, "GLSL100ES", "GLSL100ES", r.Path, i, variants)
 			writeInit(src.GLSL310ES, "GLSL310ES", "GLSL310ES", r.Path, i, variants)
@@ -347,11 +353,11 @@ func (conv *Converter) Shader(shaderPath string) ([]shaderSources, error) {
 	variantArgs := [...]Variant{
 		{
 			FetchColorExpr: `_color.color`,
-			Header:         `layout(binding=0) uniform Color { vec4 color; } _color;`,
+			Header:         `layout(push_constant) uniform Color { layout(offset=112) vec4 color; } _color;`,
 		},
 		{
 			FetchColorExpr: `mix(_gradient.color1, _gradient.color2, clamp(vUV.x, 0.0, 1.0))`,
-			Header:         `layout(binding=0) uniform Gradient { vec4 color1; vec4 color2; } _gradient;`,
+			Header:         `layout(push_constant) uniform Gradient { layout(offset=96) vec4 color1; vec4 color2; } _gradient;`,
 		},
 		{
 			FetchColorExpr: `texture(tex, vUV)`,
@@ -376,18 +382,29 @@ func (conv *Converter) Shader(shaderPath string) ([]shaderSources, error) {
 		var sources shaderSources
 		sources.Name = filepath.Base(shaderPath)
 
+		src := buf.Bytes()
+		sources.SPIRV, err = conv.glslvalidator.Convert(shaderPath, variantName, "vulkan", src)
+		if err != nil {
+			return nil, fmt.Errorf("failed to generate SPIR-V for %q: %w", shaderPath, err)
+		}
+
+		sources.SPIRV, err = spirvOpt(sources.SPIRV)
+		if err != nil {
+			return nil, fmt.Errorf("failed to optimize SPIR-V for %q: %w", shaderPath, err)
+		}
+
 		var reflect Metadata
-		sources.GLSL100ES, reflect, err = conv.ShaderVariant(shaderPath, variantName, buf.Bytes(), "es", "100")
+		sources.GLSL100ES, reflect, err = conv.ShaderVariant(shaderPath, variantName, src, "es", "100")
 		if err != nil {
 			return nil, fmt.Errorf("failed to convert GLSL100ES:\n%w", err)
 		}
 
-		metal, _, err := conv.ShaderVariant(shaderPath, variantName, buf.Bytes(), "msl", "10000")
+		metal, _, err := conv.ShaderVariant(shaderPath, variantName, src, "msl", "10000")
 		if err != nil {
 			return nil, fmt.Errorf("failed to convert to Metal:\n%w", err)
 		}
 
-		metalIOS, _, err := conv.ShaderVariant(shaderPath, variantName, buf.Bytes(), "mslios", "10000")
+		metalIOS, _, err := conv.ShaderVariant(shaderPath, variantName, src, "mslios", "10000")
 		if err != nil {
 			return nil, fmt.Errorf("failed to convert to Metal:\n%w", err)
 		}
@@ -399,10 +416,11 @@ func (conv *Converter) Shader(shaderPath string) ([]shaderSources, error) {
 			}
 		}
 
-		hlsl, _, err := conv.ShaderVariant(shaderPath, variantName, buf.Bytes(), "hlsl", "40")
+		hlsl, _, err := conv.ShaderVariant(shaderPath, variantName, src, "hlsl", "40")
 		if err != nil {
 			return nil, fmt.Errorf("failed to convert HLSL:\n%w", err)
 		}
+
 		sources.DXBC, err = conv.fxc.Compile(shaderPath, variantName, []byte(hlsl), "main", "4_0_level_9_1")
 		if err != nil {
 			// Attempt shader model 4.0. Only the gpu/headless
@@ -416,7 +434,7 @@ func (conv *Converter) Shader(shaderPath string) ([]shaderSources, error) {
 			}
 		}
 
-		sources.GLSL150, _, err = conv.ShaderVariant(shaderPath, variantName, buf.Bytes(), "glsl", "150")
+		sources.GLSL150, _, err = conv.ShaderVariant(shaderPath, variantName, src, "glsl", "150")
 		if err != nil {
 			return nil, fmt.Errorf("failed to convert GLSL150:\n%w", err)
 		}
@@ -462,18 +480,23 @@ func (conv *Converter) ComputeShader(shaderPath string) ([]shaderSources, error)
 		return nil, fmt.Errorf("failed to load shader %q: %w", shaderPath, err)
 	}
 
+	sources := shaderSources{
+		Name: filepath.Base(shaderPath),
+	}
 	spirv, err := conv.glslvalidator.Convert(shaderPath, "", "glsl", sh)
 	if err != nil {
 		return nil, fmt.Errorf("failed to convert compute shader %q: %w", shaderPath, err)
+	}
+
+	sources.SPIRV, err = spirvOpt(spirv)
+	if err != nil {
+		return nil, fmt.Errorf("failed to optimize SPIR-V for %q: %w", shaderPath, err)
 	}
 
 	meta, err := conv.spirv.Metadata(shaderPath, "", spirv)
 	if err != nil {
 		return nil, fmt.Errorf("failed to extract metadata for shader %q: %w", shaderPath, err)
 	}
-
-	var sources shaderSources
-	sources.Name = filepath.Base(shaderPath)
 	sources.WorkgroupSize = meta.WorkgroupSize
 
 	sources.GLSL310ES, err = conv.spirv.Convert(shaderPath, "", spirv, "es", "310")
@@ -492,26 +515,24 @@ func (conv *Converter) ComputeShader(shaderPath string) ([]shaderSources, error)
 		return nil, fmt.Errorf("failed to convert GLSL130:\n%w", err)
 	}
 
-	metalLibs, err := conv.msl.Compile(shaderPath, "", metal, metalIOS)
+	sources.MetalLibs, err = conv.msl.Compile(shaderPath, "", metal, metalIOS)
 	if err != nil {
 		if !errors.Is(err, exec.ErrNotFound) {
 			return nil, fmt.Errorf("failed to build .metallib library:\n%w", err)
 		}
 	}
-	sources.MetalLibs = metalLibs
 
 	hlslSource, err := conv.spirv.Convert(shaderPath, "", spirv, "hlsl", "50")
 	if err != nil {
 		return nil, fmt.Errorf("failed to convert hlsl compute shader %q: %w", shaderPath, err)
 	}
 
-	dxil, err := conv.fxc.Compile(shaderPath, "0", []byte(hlslSource), "main", "5_0")
+	sources.DXBC, err = conv.fxc.Compile(shaderPath, "0", []byte(hlslSource), "main", "5_0")
 	if err != nil {
 		if !errors.Is(err, exec.ErrNotFound) {
 			return nil, fmt.Errorf("failed to compile hlsl compute shader %q: %w", shaderPath, err)
 		}
 	}
-	sources.DXBC = dxil
 
 	return []shaderSources{sources}, nil
 }

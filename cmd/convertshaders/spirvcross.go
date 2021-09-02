@@ -5,10 +5,10 @@ package main
 import (
 	"encoding/json"
 	"fmt"
+	"math"
 	"os/exec"
 	"path/filepath"
 	"sort"
-	"strings"
 
 	"gioui.org/shader"
 )
@@ -134,6 +134,11 @@ func parseMetadata(data []byte) (Metadata, error) {
 			Set       int    `json:"set"`
 			Binding   int    `json:"binding"`
 		} `json:"ubos"`
+		PushConstants []struct {
+			Name         string `json:"name"`
+			Type         string `json:"type"`
+			PushConstant bool   `json:"push_constant"`
+		} `json:"push_constants"`
 		EntryPoints []struct {
 			Name          string `json:"name"`
 			Mode          string `json:"mode"`
@@ -165,31 +170,28 @@ func parseMetadata(data []byte) (Metadata, error) {
 		return m.Inputs[i].Location < m.Inputs[j].Location
 	})
 
-	blockOffset := 0
-	for _, block := range reflect.UBOs {
-		m.Uniforms.Blocks = append(m.Uniforms.Blocks, shader.UniformBlock{
-			Name:    block.Name,
-			Binding: block.Binding,
-		})
+	blockSize := 0
+	minOffset := math.MaxInt
+	for _, block := range reflect.PushConstants {
 		t := reflect.Types[block.Type]
-		// By convention uniform block variables are named by prepending an underscore
-		// and converting to lowercase.
-		blockVar := "_" + strings.ToLower(block.Name)
 		for _, member := range t.Members {
 			dataType, size, err := parseDataType(member.Type)
 			if err != nil {
 				return Metadata{}, fmt.Errorf("failed to parse reflection data: %v", err)
 			}
+			blockSize += size * 4
+			if member.Offset < minOffset {
+				minOffset = member.Offset
+			}
 			m.Uniforms.Locations = append(m.Uniforms.Locations, shader.UniformLocation{
-				Name:   fmt.Sprintf("%s.%s", blockVar, member.Name),
+				Name:   fmt.Sprintf("%s.%s", block.Name, member.Name),
 				Type:   dataType,
 				Size:   size,
-				Offset: blockOffset + member.Offset,
+				Offset: member.Offset,
 			})
 		}
-		blockOffset += block.BlockSize
 	}
-	m.Uniforms.Size = blockOffset
+	m.Uniforms.Size = blockSize
 
 	for _, texture := range reflect.Textures {
 		m.Textures = append(m.Textures, shader.TextureBinding{

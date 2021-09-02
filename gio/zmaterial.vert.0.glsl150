@@ -6,11 +6,13 @@ struct m3x2
     vec3 r1;
 };
 
-layout(std140) uniform Block
+struct Block
 {
     vec2 scale;
     vec2 pos;
-} _block;
+};
+
+uniform Block _block;
 
 out vec2 vUV;
 in vec2 uv;

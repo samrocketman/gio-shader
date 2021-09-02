@@ -8,7 +8,7 @@ precision highp float;
 
 #include "common.h"
 
-layout(binding = 0) uniform Block {
+layout(push_constant) uniform Block {
 	vec2 scale;
 	vec2 pos;
 } _block;

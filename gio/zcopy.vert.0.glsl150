@@ -1,11 +1,13 @@
 #version 150
 
-layout(std140) uniform Block
+struct Block
 {
     vec2 scale;
     vec2 pos;
     vec2 uvScale;
-} _block;
+};
+
+uniform Block _block;
 
 out vec2 vUV;
 in vec2 uv;

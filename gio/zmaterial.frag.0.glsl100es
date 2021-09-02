@@ -11,7 +11,7 @@ uniform Color _color;
 
 uniform mediump sampler2D tex;
 
-varying vec2 vUV;
+varying highp vec2 vUV;
 
 vec3 RGBtosRGB(vec3 rgb)
 {

@@ -12,7 +12,7 @@ uniform Gradient _gradient;
 
 uniform mediump sampler2D cover;
 
-varying vec2 vUV;
+varying highp vec2 vUV;
 varying highp vec2 vCoverUV;
 
 void main()

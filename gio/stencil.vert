@@ -4,7 +4,7 @@
 
 precision highp float;
 
-layout(binding = 0) uniform Block {
+layout(push_constant) uniform Block {
 	vec4 transform;
 	vec2 pathOffset;
 } _block;

@@ -11,7 +11,7 @@ precision highp float;
 layout(location = 0) in vec2 pos;
 layout(location = 1) in vec2 uv;
 
-layout(binding = 0) uniform Block {
+layout(push_constant) uniform Block {
 	vec4 uvTransform;
 	vec4 subUVTransform;
 } _block;

@@ -8,7 +8,7 @@ precision highp float;
 
 #include "common.h"
 
-layout(binding = 0) uniform Block {
+layout(push_constant) uniform Block {
 	vec4 transform;
 	vec4 uvCoverTransform;
 	vec4 uvTransformR1;

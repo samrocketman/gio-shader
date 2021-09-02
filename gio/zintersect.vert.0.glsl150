@@ -6,11 +6,13 @@ struct m3x2
     vec3 r1;
 };
 
-layout(std140) uniform Block
+struct Block
 {
     vec4 uvTransform;
     vec4 subUVTransform;
-} _block;
+};
+
+uniform Block _block;
 
 in vec2 pos;
 in vec2 uv;

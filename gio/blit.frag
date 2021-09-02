@@ -4,7 +4,7 @@
 
 precision mediump float;
 
-layout(location=0) in vec2 vUV;
+layout(location=0) in highp vec2 vUV;
 
 {{.Header}}
 

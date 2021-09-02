@@ -1,9 +1,11 @@
 #version 150
 
-layout(std140) uniform Color
+struct Color
 {
     vec4 color;
-} _color;
+};
+
+uniform Color _color;
 
 uniform sampler2D cover;
 

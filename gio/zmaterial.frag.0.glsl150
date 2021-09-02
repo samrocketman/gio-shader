@@ -1,9 +1,11 @@
 #version 150
 
-layout(std140) uniform Color
+struct Color
 {
     float emulateSRGB;
-} _color;
+};
+
+uniform Color _color;
 
 uniform sampler2D tex;
 

@@ -4,9 +4,9 @@
 
 precision mediump float;
 
-layout(location=0) in vec2 vFrom;
-layout(location=1) in vec2 vCtrl;
-layout(location=2) in vec2 vTo;
+layout(location=0) in highp vec2 vFrom;
+layout(location=1) in highp vec2 vCtrl;
+layout(location=2) in highp vec2 vTo;
 
 layout(location = 0) out vec4 fragCover;
 

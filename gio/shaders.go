@@ -15,8 +15,7 @@ var (
 			Name:   "blit.frag",
 			Inputs: []shader.InputLocation{{Name: "vUV", Location: 0, Semantic: "TEXCOORD", SemanticIndex: 0, Type: 0x0, Size: 2}},
 			Uniforms: shader.UniformsReflection{
-				Blocks:    []shader.UniformBlock{{Name: "Color", Binding: 0}},
-				Locations: []shader.UniformLocation{{Name: "_color.color", Type: 0x0, Size: 4, Offset: 0}},
+				Locations: []shader.UniformLocation{{Name: "_color.color", Type: 0x0, Size: 4, Offset: 112}},
 				Size:      16,
 			},
 		},
@@ -24,8 +23,7 @@ var (
 			Name:   "blit.frag",
 			Inputs: []shader.InputLocation{{Name: "vUV", Location: 0, Semantic: "TEXCOORD", SemanticIndex: 0, Type: 0x0, Size: 2}},
 			Uniforms: shader.UniformsReflection{
-				Blocks:    []shader.UniformBlock{{Name: "Gradient", Binding: 0}},
-				Locations: []shader.UniformLocation{{Name: "_gradient.color1", Type: 0x0, Size: 4, Offset: 0}, {Name: "_gradient.color2", Type: 0x0, Size: 4, Offset: 16}},
+				Locations: []shader.UniformLocation{{Name: "_gradient.color1", Type: 0x0, Size: 4, Offset: 96}, {Name: "_gradient.color2", Type: 0x0, Size: 4, Offset: 112}},
 				Size:      32,
 			},
 		},
@@ -35,6 +33,8 @@ var (
 			Textures: []shader.TextureBinding{{Name: "tex", Binding: 0}},
 		},
 	}
+	//go:embed zblit.frag.0.spirv
+	zblit_frag_0_spirv string
 	//go:embed zblit.frag.0.glsl100es
 	zblit_frag_0_glsl100es string
 	//go:embed zblit.frag.0.glsl150
@@ -47,6 +47,8 @@ var (
 	zblit_frag_0_metallibios string
 	//go:embed zblit.frag.0.metallibiossimulator
 	zblit_frag_0_metallibiossimulator string
+	//go:embed zblit.frag.1.spirv
+	zblit_frag_1_spirv string
 	//go:embed zblit.frag.1.glsl100es
 	zblit_frag_1_glsl100es string
 	//go:embed zblit.frag.1.glsl150
@@ -59,6 +61,8 @@ var (
 	zblit_frag_1_metallibios string
 	//go:embed zblit.frag.1.metallibiossimulator
 	zblit_frag_1_metallibiossimulator string
+	//go:embed zblit.frag.2.spirv
+	zblit_frag_2_spirv string
 	//go:embed zblit.frag.2.glsl100es
 	zblit_frag_2_glsl100es string
 	//go:embed zblit.frag.2.glsl150
@@ -75,11 +79,12 @@ var (
 		Name:   "blit.vert",
 		Inputs: []shader.InputLocation{{Name: "pos", Location: 0, Semantic: "TEXCOORD", SemanticIndex: 0, Type: 0x0, Size: 2}, {Name: "uv", Location: 1, Semantic: "TEXCOORD", SemanticIndex: 1, Type: 0x0, Size: 2}},
 		Uniforms: shader.UniformsReflection{
-			Blocks:    []shader.UniformBlock{{Name: "Block", Binding: 0}},
 			Locations: []shader.UniformLocation{{Name: "_block.transform", Type: 0x0, Size: 4, Offset: 0}, {Name: "_block.uvTransformR1", Type: 0x0, Size: 4, Offset: 16}, {Name: "_block.uvTransformR2", Type: 0x0, Size: 4, Offset: 32}, {Name: "_block.z", Type: 0x0, Size: 1, Offset: 48}},
 			Size:      52,
 		},
 	}
+	//go:embed zblit.vert.0.spirv
+	zblit_vert_0_spirv string
 	//go:embed zblit.vert.0.glsl100es
 	zblit_vert_0_glsl100es string
 	//go:embed zblit.vert.0.glsl150
@@ -97,6 +102,8 @@ var (
 		Inputs:   []shader.InputLocation{{Name: "vUV", Location: 0, Semantic: "TEXCOORD", SemanticIndex: 0, Type: 0x0, Size: 2}},
 		Textures: []shader.TextureBinding{{Name: "tex", Binding: 0}},
 	}
+	//go:embed zcopy.frag.0.spirv
+	zcopy_frag_0_spirv string
 	//go:embed zcopy.frag.0.glsl100es
 	zcopy_frag_0_glsl100es string
 	//go:embed zcopy.frag.0.glsl150
@@ -113,11 +120,12 @@ var (
 		Name:   "copy.vert",
 		Inputs: []shader.InputLocation{{Name: "pos", Location: 0, Semantic: "TEXCOORD", SemanticIndex: 0, Type: 0x0, Size: 2}, {Name: "uv", Location: 1, Semantic: "TEXCOORD", SemanticIndex: 1, Type: 0x0, Size: 2}},
 		Uniforms: shader.UniformsReflection{
-			Blocks:    []shader.UniformBlock{{Name: "Block", Binding: 0}},
 			Locations: []shader.UniformLocation{{Name: "_block.scale", Type: 0x0, Size: 2, Offset: 0}, {Name: "_block.pos", Type: 0x0, Size: 2, Offset: 8}, {Name: "_block.uvScale", Type: 0x0, Size: 2, Offset: 16}},
 			Size:      24,
 		},
 	}
+	//go:embed zcopy.vert.0.spirv
+	zcopy_vert_0_spirv string
 	//go:embed zcopy.vert.0.glsl100es
 	zcopy_vert_0_glsl100es string
 	//go:embed zcopy.vert.0.glsl150
@@ -135,8 +143,7 @@ var (
 			Name:   "cover.frag",
 			Inputs: []shader.InputLocation{{Name: "vCoverUV", Location: 0, Semantic: "TEXCOORD", SemanticIndex: 0, Type: 0x0, Size: 2}, {Name: "vUV", Location: 1, Semantic: "TEXCOORD", SemanticIndex: 1, Type: 0x0, Size: 2}},
 			Uniforms: shader.UniformsReflection{
-				Blocks:    []shader.UniformBlock{{Name: "Color", Binding: 0}},
-				Locations: []shader.UniformLocation{{Name: "_color.color", Type: 0x0, Size: 4, Offset: 0}},
+				Locations: []shader.UniformLocation{{Name: "_color.color", Type: 0x0, Size: 4, Offset: 112}},
 				Size:      16,
 			},
 			Textures: []shader.TextureBinding{{Name: "cover", Binding: 1}},
@@ -145,8 +152,7 @@ var (
 			Name:   "cover.frag",
 			Inputs: []shader.InputLocation{{Name: "vCoverUV", Location: 0, Semantic: "TEXCOORD", SemanticIndex: 0, Type: 0x0, Size: 2}, {Name: "vUV", Location: 1, Semantic: "TEXCOORD", SemanticIndex: 1, Type: 0x0, Size: 2}},
 			Uniforms: shader.UniformsReflection{
-				Blocks:    []shader.UniformBlock{{Name: "Gradient", Binding: 0}},
-				Locations: []shader.UniformLocation{{Name: "_gradient.color1", Type: 0x0, Size: 4, Offset: 0}, {Name: "_gradient.color2", Type: 0x0, Size: 4, Offset: 16}},
+				Locations: []shader.UniformLocation{{Name: "_gradient.color1", Type: 0x0, Size: 4, Offset: 96}, {Name: "_gradient.color2", Type: 0x0, Size: 4, Offset: 112}},
 				Size:      32,
 			},
 			Textures: []shader.TextureBinding{{Name: "cover", Binding: 1}},
@@ -157,6 +163,8 @@ var (
 			Textures: []shader.TextureBinding{{Name: "tex", Binding: 0}, {Name: "cover", Binding: 1}},
 		},
 	}
+	//go:embed zcover.frag.0.spirv
+	zcover_frag_0_spirv string
 	//go:embed zcover.frag.0.glsl100es
 	zcover_frag_0_glsl100es string
 	//go:embed zcover.frag.0.glsl150
@@ -169,6 +177,8 @@ var (
 	zcover_frag_0_metallibios string
 	//go:embed zcover.frag.0.metallibiossimulator
 	zcover_frag_0_metallibiossimulator string
+	//go:embed zcover.frag.1.spirv
+	zcover_frag_1_spirv string
 	//go:embed zcover.frag.1.glsl100es
 	zcover_frag_1_glsl100es string
 	//go:embed zcover.frag.1.glsl150
@@ -181,6 +191,8 @@ var (
 	zcover_frag_1_metallibios string
 	//go:embed zcover.frag.1.metallibiossimulator
 	zcover_frag_1_metallibiossimulator string
+	//go:embed zcover.frag.2.spirv
+	zcover_frag_2_spirv string
 	//go:embed zcover.frag.2.glsl100es
 	zcover_frag_2_glsl100es string
 	//go:embed zcover.frag.2.glsl150
@@ -197,11 +209,12 @@ var (
 		Name:   "cover.vert",
 		Inputs: []shader.InputLocation{{Name: "pos", Location: 0, Semantic: "TEXCOORD", SemanticIndex: 0, Type: 0x0, Size: 2}, {Name: "uv", Location: 1, Semantic: "TEXCOORD", SemanticIndex: 1, Type: 0x0, Size: 2}},
 		Uniforms: shader.UniformsReflection{
-			Blocks:    []shader.UniformBlock{{Name: "Block", Binding: 0}},
 			Locations: []shader.UniformLocation{{Name: "_block.transform", Type: 0x0, Size: 4, Offset: 0}, {Name: "_block.uvCoverTransform", Type: 0x0, Size: 4, Offset: 16}, {Name: "_block.uvTransformR1", Type: 0x0, Size: 4, Offset: 32}, {Name: "_block.uvTransformR2", Type: 0x0, Size: 4, Offset: 48}, {Name: "_block.z", Type: 0x0, Size: 1, Offset: 64}},
 			Size:      68,
 		},
 	}
+	//go:embed zcover.vert.0.spirv
+	zcover_vert_0_spirv string
 	//go:embed zcover.vert.0.glsl100es
 	zcover_vert_0_glsl100es string
 	//go:embed zcover.vert.0.glsl150
@@ -218,6 +231,8 @@ var (
 		Name:   "input.vert",
 		Inputs: []shader.InputLocation{{Name: "position", Location: 0, Semantic: "TEXCOORD", SemanticIndex: 0, Type: 0x0, Size: 4}},
 	}
+	//go:embed zinput.vert.0.spirv
+	zinput_vert_0_spirv string
 	//go:embed zinput.vert.0.glsl100es
 	zinput_vert_0_glsl100es string
 	//go:embed zinput.vert.0.glsl150
@@ -235,6 +250,8 @@ var (
 		Inputs:   []shader.InputLocation{{Name: "vUV", Location: 0, Semantic: "TEXCOORD", SemanticIndex: 0, Type: 0x0, Size: 2}},
 		Textures: []shader.TextureBinding{{Name: "cover", Binding: 0}},
 	}
+	//go:embed zintersect.frag.0.spirv
+	zintersect_frag_0_spirv string
 	//go:embed zintersect.frag.0.glsl100es
 	zintersect_frag_0_glsl100es string
 	//go:embed zintersect.frag.0.glsl150
@@ -251,11 +268,12 @@ var (
 		Name:   "intersect.vert",
 		Inputs: []shader.InputLocation{{Name: "pos", Location: 0, Semantic: "TEXCOORD", SemanticIndex: 0, Type: 0x0, Size: 2}, {Name: "uv", Location: 1, Semantic: "TEXCOORD", SemanticIndex: 1, Type: 0x0, Size: 2}},
 		Uniforms: shader.UniformsReflection{
-			Blocks:    []shader.UniformBlock{{Name: "Block", Binding: 0}},
 			Locations: []shader.UniformLocation{{Name: "_block.uvTransform", Type: 0x0, Size: 4, Offset: 0}, {Name: "_block.subUVTransform", Type: 0x0, Size: 4, Offset: 16}},
 			Size:      32,
 		},
 	}
+	//go:embed zintersect.vert.0.spirv
+	zintersect_vert_0_spirv string
 	//go:embed zintersect.vert.0.glsl100es
 	zintersect_vert_0_glsl100es string
 	//go:embed zintersect.vert.0.glsl150
@@ -272,12 +290,13 @@ var (
 		Name:   "material.frag",
 		Inputs: []shader.InputLocation{{Name: "vUV", Location: 0, Semantic: "TEXCOORD", SemanticIndex: 0, Type: 0x0, Size: 2}},
 		Uniforms: shader.UniformsReflection{
-			Blocks:    []shader.UniformBlock{{Name: "Color", Binding: 0}},
-			Locations: []shader.UniformLocation{{Name: "_color.emulateSRGB", Type: 0x0, Size: 1, Offset: 0}},
+			Locations: []shader.UniformLocation{{Name: "_color.emulateSRGB", Type: 0x0, Size: 1, Offset: 16}},
 			Size:      4,
 		},
 		Textures: []shader.TextureBinding{{Name: "tex", Binding: 0}},
 	}
+	//go:embed zmaterial.frag.0.spirv
+	zmaterial_frag_0_spirv string
 	//go:embed zmaterial.frag.0.glsl100es
 	zmaterial_frag_0_glsl100es string
 	//go:embed zmaterial.frag.0.glsl150
@@ -294,11 +313,12 @@ var (
 		Name:   "material.vert",
 		Inputs: []shader.InputLocation{{Name: "pos", Location: 0, Semantic: "TEXCOORD", SemanticIndex: 0, Type: 0x0, Size: 2}, {Name: "uv", Location: 1, Semantic: "TEXCOORD", SemanticIndex: 1, Type: 0x0, Size: 2}},
 		Uniforms: shader.UniformsReflection{
-			Blocks:    []shader.UniformBlock{{Name: "Block", Binding: 0}},
 			Locations: []shader.UniformLocation{{Name: "_block.scale", Type: 0x0, Size: 2, Offset: 0}, {Name: "_block.pos", Type: 0x0, Size: 2, Offset: 8}},
 			Size:      16,
 		},
 	}
+	//go:embed zmaterial.vert.0.spirv
+	zmaterial_vert_0_spirv string
 	//go:embed zmaterial.vert.0.glsl100es
 	zmaterial_vert_0_glsl100es string
 	//go:embed zmaterial.vert.0.glsl150
@@ -314,6 +334,8 @@ var (
 	Shader_simple_frag                    = shader.Sources{
 		Name: "simple.frag",
 	}
+	//go:embed zsimple.frag.0.spirv
+	zsimple_frag_0_spirv string
 	//go:embed zsimple.frag.0.glsl100es
 	zsimple_frag_0_glsl100es string
 	//go:embed zsimple.frag.0.glsl150
@@ -330,6 +352,8 @@ var (
 		Name:   "stencil.frag",
 		Inputs: []shader.InputLocation{{Name: "vFrom", Location: 0, Semantic: "TEXCOORD", SemanticIndex: 0, Type: 0x0, Size: 2}, {Name: "vCtrl", Location: 1, Semantic: "TEXCOORD", SemanticIndex: 1, Type: 0x0, Size: 2}, {Name: "vTo", Location: 2, Semantic: "TEXCOORD", SemanticIndex: 2, Type: 0x0, Size: 2}},
 	}
+	//go:embed zstencil.frag.0.spirv
+	zstencil_frag_0_spirv string
 	//go:embed zstencil.frag.0.glsl100es
 	zstencil_frag_0_glsl100es string
 	//go:embed zstencil.frag.0.glsl150
@@ -346,11 +370,12 @@ var (
 		Name:   "stencil.vert",
 		Inputs: []shader.InputLocation{{Name: "corner", Location: 0, Semantic: "TEXCOORD", SemanticIndex: 0, Type: 0x0, Size: 1}, {Name: "maxy", Location: 1, Semantic: "TEXCOORD", SemanticIndex: 1, Type: 0x0, Size: 1}, {Name: "from", Location: 2, Semantic: "TEXCOORD", SemanticIndex: 2, Type: 0x0, Size: 2}, {Name: "ctrl", Location: 3, Semantic: "TEXCOORD", SemanticIndex: 3, Type: 0x0, Size: 2}, {Name: "to", Location: 4, Semantic: "TEXCOORD", SemanticIndex: 4, Type: 0x0, Size: 2}},
 		Uniforms: shader.UniformsReflection{
-			Blocks:    []shader.UniformBlock{{Name: "Block", Binding: 0}},
 			Locations: []shader.UniformLocation{{Name: "_block.transform", Type: 0x0, Size: 4, Offset: 0}, {Name: "_block.pathOffset", Type: 0x0, Size: 2, Offset: 16}},
 			Size:      24,
 		},
 	}
+	//go:embed zstencil.vert.0.spirv
+	zstencil_vert_0_spirv string
 	//go:embed zstencil.vert.0.glsl100es
 	zstencil_vert_0_glsl100es string
 	//go:embed zstencil.vert.0.glsl150
@@ -370,7 +395,11 @@ func init() {
 		opengles = runtime.GOOS == "linux" || runtime.GOOS == "freebsd" || runtime.GOOS == "openbsd" || runtime.GOOS == "windows" || runtime.GOOS == "js" || runtime.GOOS == "android" || runtime.GOOS == "darwin" || runtime.GOOS == "ios"
 		opengl   = runtime.GOOS == "darwin"
 		d3d11    = runtime.GOOS == "windows"
+		vulkan   = runtime.GOOS == "linux" || runtime.GOOS == "android"
 	)
+	if vulkan {
+		Shader_blit_frag[0].SPIRV = zblit_frag_0_spirv
+	}
 	if opengles {
 		Shader_blit_frag[0].GLSL100ES = zblit_frag_0_glsl100es
 	}
@@ -389,6 +418,9 @@ func init() {
 		} else {
 			Shader_blit_frag[0].MetalLib = zblit_frag_0_metallibios
 		}
+	}
+	if vulkan {
+		Shader_blit_frag[1].SPIRV = zblit_frag_1_spirv
 	}
 	if opengles {
 		Shader_blit_frag[1].GLSL100ES = zblit_frag_1_glsl100es
@@ -409,6 +441,9 @@ func init() {
 			Shader_blit_frag[1].MetalLib = zblit_frag_1_metallibios
 		}
 	}
+	if vulkan {
+		Shader_blit_frag[2].SPIRV = zblit_frag_2_spirv
+	}
 	if opengles {
 		Shader_blit_frag[2].GLSL100ES = zblit_frag_2_glsl100es
 	}
@@ -427,6 +462,9 @@ func init() {
 		} else {
 			Shader_blit_frag[2].MetalLib = zblit_frag_2_metallibios
 		}
+	}
+	if vulkan {
+		Shader_blit_vert.SPIRV = zblit_vert_0_spirv
 	}
 	if opengles {
 		Shader_blit_vert.GLSL100ES = zblit_vert_0_glsl100es
@@ -447,6 +485,9 @@ func init() {
 			Shader_blit_vert.MetalLib = zblit_vert_0_metallibios
 		}
 	}
+	if vulkan {
+		Shader_copy_frag.SPIRV = zcopy_frag_0_spirv
+	}
 	if opengles {
 		Shader_copy_frag.GLSL100ES = zcopy_frag_0_glsl100es
 	}
@@ -465,6 +506,9 @@ func init() {
 		} else {
 			Shader_copy_frag.MetalLib = zcopy_frag_0_metallibios
 		}
+	}
+	if vulkan {
+		Shader_copy_vert.SPIRV = zcopy_vert_0_spirv
 	}
 	if opengles {
 		Shader_copy_vert.GLSL100ES = zcopy_vert_0_glsl100es
@@ -485,6 +529,9 @@ func init() {
 			Shader_copy_vert.MetalLib = zcopy_vert_0_metallibios
 		}
 	}
+	if vulkan {
+		Shader_cover_frag[0].SPIRV = zcover_frag_0_spirv
+	}
 	if opengles {
 		Shader_cover_frag[0].GLSL100ES = zcover_frag_0_glsl100es
 	}
@@ -503,6 +550,9 @@ func init() {
 		} else {
 			Shader_cover_frag[0].MetalLib = zcover_frag_0_metallibios
 		}
+	}
+	if vulkan {
+		Shader_cover_frag[1].SPIRV = zcover_frag_1_spirv
 	}
 	if opengles {
 		Shader_cover_frag[1].GLSL100ES = zcover_frag_1_glsl100es
@@ -523,6 +573,9 @@ func init() {
 			Shader_cover_frag[1].MetalLib = zcover_frag_1_metallibios
 		}
 	}
+	if vulkan {
+		Shader_cover_frag[2].SPIRV = zcover_frag_2_spirv
+	}
 	if opengles {
 		Shader_cover_frag[2].GLSL100ES = zcover_frag_2_glsl100es
 	}
@@ -541,6 +594,9 @@ func init() {
 		} else {
 			Shader_cover_frag[2].MetalLib = zcover_frag_2_metallibios
 		}
+	}
+	if vulkan {
+		Shader_cover_vert.SPIRV = zcover_vert_0_spirv
 	}
 	if opengles {
 		Shader_cover_vert.GLSL100ES = zcover_vert_0_glsl100es
@@ -561,6 +617,9 @@ func init() {
 			Shader_cover_vert.MetalLib = zcover_vert_0_metallibios
 		}
 	}
+	if vulkan {
+		Shader_input_vert.SPIRV = zinput_vert_0_spirv
+	}
 	if opengles {
 		Shader_input_vert.GLSL100ES = zinput_vert_0_glsl100es
 	}
@@ -579,6 +638,9 @@ func init() {
 		} else {
 			Shader_input_vert.MetalLib = zinput_vert_0_metallibios
 		}
+	}
+	if vulkan {
+		Shader_intersect_frag.SPIRV = zintersect_frag_0_spirv
 	}
 	if opengles {
 		Shader_intersect_frag.GLSL100ES = zintersect_frag_0_glsl100es
@@ -599,6 +661,9 @@ func init() {
 			Shader_intersect_frag.MetalLib = zintersect_frag_0_metallibios
 		}
 	}
+	if vulkan {
+		Shader_intersect_vert.SPIRV = zintersect_vert_0_spirv
+	}
 	if opengles {
 		Shader_intersect_vert.GLSL100ES = zintersect_vert_0_glsl100es
 	}
@@ -617,6 +682,9 @@ func init() {
 		} else {
 			Shader_intersect_vert.MetalLib = zintersect_vert_0_metallibios
 		}
+	}
+	if vulkan {
+		Shader_material_frag.SPIRV = zmaterial_frag_0_spirv
 	}
 	if opengles {
 		Shader_material_frag.GLSL100ES = zmaterial_frag_0_glsl100es
@@ -637,6 +705,9 @@ func init() {
 			Shader_material_frag.MetalLib = zmaterial_frag_0_metallibios
 		}
 	}
+	if vulkan {
+		Shader_material_vert.SPIRV = zmaterial_vert_0_spirv
+	}
 	if opengles {
 		Shader_material_vert.GLSL100ES = zmaterial_vert_0_glsl100es
 	}
@@ -655,6 +726,9 @@ func init() {
 		} else {
 			Shader_material_vert.MetalLib = zmaterial_vert_0_metallibios
 		}
+	}
+	if vulkan {
+		Shader_simple_frag.SPIRV = zsimple_frag_0_spirv
 	}
 	if opengles {
 		Shader_simple_frag.GLSL100ES = zsimple_frag_0_glsl100es
@@ -675,6 +749,9 @@ func init() {
 			Shader_simple_frag.MetalLib = zsimple_frag_0_metallibios
 		}
 	}
+	if vulkan {
+		Shader_stencil_frag.SPIRV = zstencil_frag_0_spirv
+	}
 	if opengles {
 		Shader_stencil_frag.GLSL100ES = zstencil_frag_0_glsl100es
 	}
@@ -693,6 +770,9 @@ func init() {
 		} else {
 			Shader_stencil_frag.MetalLib = zstencil_frag_0_metallibios
 		}
+	}
+	if vulkan {
+		Shader_stencil_vert.SPIRV = zstencil_vert_0_spirv
 	}
 	if opengles {
 		Shader_stencil_vert.GLSL100ES = zstencil_vert_0_glsl100es
