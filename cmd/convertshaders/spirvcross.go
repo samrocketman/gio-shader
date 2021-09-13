@@ -15,10 +15,12 @@ import (
 
 // Metadata contains reflection data about a shader.
 type Metadata struct {
-	Uniforms      shader.UniformsReflection
-	Inputs        []shader.InputLocation
-	Textures      []shader.TextureBinding
-	WorkgroupSize [3]int
+	Uniforms       shader.UniformsReflection
+	Inputs         []shader.InputLocation
+	Textures       []shader.TextureBinding
+	Images         []shader.ImageBinding
+	StorageBuffers []shader.BufferBinding
+	WorkgroupSize  [3]int
 }
 
 // SPIRVCross cross-compiles spirv shaders to es, hlsl and others.
@@ -144,6 +146,16 @@ func parseMetadata(data []byte) (Metadata, error) {
 			Mode          string `json:"mode"`
 			WorkgroupSize [3]int `json:"workgroup_size"`
 		} `json:"entryPoints"`
+		StorageBuffers []struct {
+			Name    string `json:"name"`
+			Type    string `json:"type"`
+			Binding int    `json:"binding"`
+		} `json:"ssbos"`
+		Images []struct {
+			Name    string `json:"name"`
+			Type    string `json:"type"`
+			Binding int    `json:"binding"`
+		} `json:"images"`
 	}
 	if err := json.Unmarshal(data, &reflect); err != nil {
 		return Metadata{}, fmt.Errorf("failed to parse reflection data: %w", err)
@@ -197,6 +209,20 @@ func parseMetadata(data []byte) (Metadata, error) {
 		m.Textures = append(m.Textures, shader.TextureBinding{
 			Name:    texture.Name,
 			Binding: texture.Binding,
+		})
+	}
+
+	for _, img := range reflect.Images {
+		m.Images = append(m.Images, shader.ImageBinding{
+			Name:    img.Name,
+			Binding: img.Binding,
+		})
+	}
+
+	for _, sb := range reflect.StorageBuffers {
+		m.StorageBuffers = append(m.StorageBuffers, shader.BufferBinding{
+			Name:    sb.Name,
+			Binding: sb.Binding,
 		})
 	}
 

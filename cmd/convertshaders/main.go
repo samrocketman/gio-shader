@@ -17,22 +17,17 @@ import (
 	"strings"
 	"sync"
 	"text/template"
-
-	"gioui.org/shader"
 )
 
 type shaderSources struct {
-	Name          string
-	SPIRV         []byte
-	GLSL100ES     []byte
-	GLSL310ES     []byte
-	GLSL150       []byte
-	DXBC          []byte
-	MetalLibs     MetalLibs
-	Uniforms      shader.UniformsReflection
-	Inputs        []shader.InputLocation
-	Textures      []shader.TextureBinding
-	WorkgroupSize [3]int
+	Name      string
+	SPIRV     []byte
+	GLSL100ES []byte
+	GLSL310ES []byte
+	GLSL150   []byte
+	DXBC      []byte
+	MetalLibs MetalLibs
+	Reflect   Metadata
 }
 
 func main() {
@@ -230,20 +225,26 @@ func (conv *Converter) Run(out io.Writer) error {
 		for i, src := range r.Shaders {
 			fmt.Fprintf(out, "shader.Sources{\n")
 			fmt.Fprintf(out, "Name: %#v,\n", src.Name)
-			if len(src.Inputs) > 0 {
-				fmt.Fprintf(out, "Inputs: %#v,\n", src.Inputs)
+			if inp := src.Reflect.Inputs; len(inp) > 0 {
+				fmt.Fprintf(out, "Inputs: %#v,\n", inp)
 			}
-			if u := src.Uniforms; u.Size > 0 {
+			if u := src.Reflect.Uniforms; u.Size > 0 {
 				fmt.Fprintf(out, "Uniforms: shader.UniformsReflection{\n")
 				fmt.Fprintf(out, "Locations: %#v,\n", u.Locations)
 				fmt.Fprintf(out, "Size: %d,\n", u.Size)
 				fmt.Fprintf(out, "},\n")
 			}
-			if len(src.Textures) > 0 {
-				fmt.Fprintf(out, "Textures: %#v,\n", src.Textures)
+			if tex := src.Reflect.Textures; len(tex) > 0 {
+				fmt.Fprintf(out, "Textures: %#v,\n", tex)
 			}
-			if src.WorkgroupSize != [3]int{} {
-				fmt.Fprintf(out, "WorkgroupSize: %#v,\n", src.WorkgroupSize)
+			if imgs := src.Reflect.Images; len(imgs) > 0 {
+				fmt.Fprintf(out, "Images: %#v,\n", imgs)
+			}
+			if bufs := src.Reflect.StorageBuffers; len(bufs) > 0 {
+				fmt.Fprintf(out, "StorageBuffers: %#v,\n", bufs)
+			}
+			if wg := src.Reflect.WorkgroupSize; wg != [3]int{} {
+				fmt.Fprintf(out, "WorkgroupSize: %#v,\n", wg)
 			}
 			writeGenerated(src.SPIRV, "SPIRV", r.Path, i)
 			writeGenerated(src.GLSL100ES, "GLSL100ES", r.Path, i)
@@ -439,10 +440,7 @@ func (conv *Converter) Shader(shaderPath string) ([]shaderSources, error) {
 			return nil, fmt.Errorf("failed to convert GLSL150:\n%w", err)
 		}
 
-		sources.Uniforms = reflect.Uniforms
-		sources.Inputs = reflect.Inputs
-		sources.Textures = reflect.Textures
-		sources.WorkgroupSize = reflect.WorkgroupSize
+		sources.Reflect = reflect
 
 		variants = append(variants, sources)
 	}
@@ -497,7 +495,7 @@ func (conv *Converter) ComputeShader(shaderPath string) ([]shaderSources, error)
 	if err != nil {
 		return nil, fmt.Errorf("failed to extract metadata for shader %q: %w", shaderPath, err)
 	}
-	sources.WorkgroupSize = meta.WorkgroupSize
+	sources.Reflect = meta
 
 	sources.GLSL310ES, err = conv.spirv.Convert(shaderPath, "", spirv, "es", "310")
 	if err != nil {

@@ -3,22 +3,34 @@
 package shader
 
 type Sources struct {
-	Name          string
-	SPIRV         string
-	GLSL100ES     string
-	GLSL310ES     string
-	GLSL150       string
-	DXBC          string
-	MetalLib      string
-	Uniforms      UniformsReflection
-	Inputs        []InputLocation
-	Textures      []TextureBinding
-	WorkgroupSize [3]int
+	Name           string
+	SPIRV          string
+	GLSL100ES      string
+	GLSL310ES      string
+	GLSL150        string
+	DXBC           string
+	MetalLib       string
+	Uniforms       UniformsReflection
+	Inputs         []InputLocation
+	Textures       []TextureBinding
+	StorageBuffers []BufferBinding
+	Images         []ImageBinding
+	WorkgroupSize  [3]int
 }
 
 type UniformsReflection struct {
 	Locations []UniformLocation
 	Size      int
+}
+
+type ImageBinding struct {
+	Name    string
+	Binding int
+}
+
+type BufferBinding struct {
+	Name    string
+	Binding int
 }
 
 type TextureBinding struct {

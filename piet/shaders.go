@@ -11,8 +11,9 @@ import (
 
 var (
 	Shader_backdrop_comp = shader.Sources{
-		Name:          "backdrop.comp",
-		WorkgroupSize: [3]int{128, 1, 1},
+		Name:           "backdrop.comp",
+		StorageBuffers: []shader.BufferBinding{{Name: "Memory", Binding: 0}, {Name: "ConfigBuf", Binding: 1}},
+		WorkgroupSize:  [3]int{128, 1, 1},
 	}
 	//go:embed zbackdrop.comp.0.spirv
 	zbackdrop_comp_0_spirv string
@@ -27,8 +28,9 @@ var (
 	//go:embed zbackdrop.comp.0.metallibiossimulator
 	zbackdrop_comp_0_metallibiossimulator string
 	Shader_binning_comp                   = shader.Sources{
-		Name:          "binning.comp",
-		WorkgroupSize: [3]int{128, 1, 1},
+		Name:           "binning.comp",
+		StorageBuffers: []shader.BufferBinding{{Name: "Memory", Binding: 0}, {Name: "ConfigBuf", Binding: 1}},
+		WorkgroupSize:  [3]int{128, 1, 1},
 	}
 	//go:embed zbinning.comp.0.spirv
 	zbinning_comp_0_spirv string
@@ -43,8 +45,9 @@ var (
 	//go:embed zbinning.comp.0.metallibiossimulator
 	zbinning_comp_0_metallibiossimulator string
 	Shader_coarse_comp                   = shader.Sources{
-		Name:          "coarse.comp",
-		WorkgroupSize: [3]int{128, 1, 1},
+		Name:           "coarse.comp",
+		StorageBuffers: []shader.BufferBinding{{Name: "Memory", Binding: 0}, {Name: "ConfigBuf", Binding: 1}},
+		WorkgroupSize:  [3]int{128, 1, 1},
 	}
 	//go:embed zcoarse.comp.0.spirv
 	zcoarse_comp_0_spirv string
@@ -59,8 +62,9 @@ var (
 	//go:embed zcoarse.comp.0.metallibiossimulator
 	zcoarse_comp_0_metallibiossimulator string
 	Shader_elements_comp                = shader.Sources{
-		Name:          "elements.comp",
-		WorkgroupSize: [3]int{32, 1, 1},
+		Name:           "elements.comp",
+		StorageBuffers: []shader.BufferBinding{{Name: "Memory", Binding: 0}, {Name: "SceneBuf", Binding: 2}, {Name: "StateBuf", Binding: 3}, {Name: "ConfigBuf", Binding: 1}},
+		WorkgroupSize:  [3]int{32, 1, 1},
 	}
 	//go:embed zelements.comp.0.spirv
 	zelements_comp_0_spirv string
@@ -75,8 +79,10 @@ var (
 	//go:embed zelements.comp.0.metallibiossimulator
 	zelements_comp_0_metallibiossimulator string
 	Shader_kernel4_comp                   = shader.Sources{
-		Name:          "kernel4.comp",
-		WorkgroupSize: [3]int{16, 8, 1},
+		Name:           "kernel4.comp",
+		Images:         []shader.ImageBinding{{Name: "images", Binding: 3}, {Name: "image", Binding: 2}},
+		StorageBuffers: []shader.BufferBinding{{Name: "Memory", Binding: 0}, {Name: "ConfigBuf", Binding: 1}},
+		WorkgroupSize:  [3]int{16, 8, 1},
 	}
 	//go:embed zkernel4.comp.0.spirv
 	zkernel4_comp_0_spirv string
@@ -91,8 +97,9 @@ var (
 	//go:embed zkernel4.comp.0.metallibiossimulator
 	zkernel4_comp_0_metallibiossimulator string
 	Shader_path_coarse_comp              = shader.Sources{
-		Name:          "path_coarse.comp",
-		WorkgroupSize: [3]int{32, 1, 1},
+		Name:           "path_coarse.comp",
+		StorageBuffers: []shader.BufferBinding{{Name: "Memory", Binding: 0}, {Name: "ConfigBuf", Binding: 1}},
+		WorkgroupSize:  [3]int{32, 1, 1},
 	}
 	//go:embed zpath_coarse.comp.0.spirv
 	zpath_coarse_comp_0_spirv string
@@ -107,8 +114,9 @@ var (
 	//go:embed zpath_coarse.comp.0.metallibiossimulator
 	zpath_coarse_comp_0_metallibiossimulator string
 	Shader_tile_alloc_comp                   = shader.Sources{
-		Name:          "tile_alloc.comp",
-		WorkgroupSize: [3]int{128, 1, 1},
+		Name:           "tile_alloc.comp",
+		StorageBuffers: []shader.BufferBinding{{Name: "Memory", Binding: 0}, {Name: "ConfigBuf", Binding: 1}},
+		WorkgroupSize:  [3]int{128, 1, 1},
 	}
 	//go:embed ztile_alloc.comp.0.spirv
 	ztile_alloc_comp_0_spirv string
