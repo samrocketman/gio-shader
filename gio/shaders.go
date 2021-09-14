@@ -37,10 +37,6 @@ var (
 	}
 	//go:embed zblit.frag.0.glsl100es
 	zblit_frag_0_glsl100es string
-	//go:embed zblit.frag.0.glsl300es
-	zblit_frag_0_glsl300es string
-	//go:embed zblit.frag.0.glsl130
-	zblit_frag_0_glsl130 string
 	//go:embed zblit.frag.0.glsl150
 	zblit_frag_0_glsl150 string
 	//go:embed zblit.frag.0.dxbc
@@ -53,10 +49,6 @@ var (
 	zblit_frag_0_metallibiossimulator string
 	//go:embed zblit.frag.1.glsl100es
 	zblit_frag_1_glsl100es string
-	//go:embed zblit.frag.1.glsl300es
-	zblit_frag_1_glsl300es string
-	//go:embed zblit.frag.1.glsl130
-	zblit_frag_1_glsl130 string
 	//go:embed zblit.frag.1.glsl150
 	zblit_frag_1_glsl150 string
 	//go:embed zblit.frag.1.dxbc
@@ -69,10 +61,6 @@ var (
 	zblit_frag_1_metallibiossimulator string
 	//go:embed zblit.frag.2.glsl100es
 	zblit_frag_2_glsl100es string
-	//go:embed zblit.frag.2.glsl300es
-	zblit_frag_2_glsl300es string
-	//go:embed zblit.frag.2.glsl130
-	zblit_frag_2_glsl130 string
 	//go:embed zblit.frag.2.glsl150
 	zblit_frag_2_glsl150 string
 	//go:embed zblit.frag.2.dxbc
@@ -94,10 +82,6 @@ var (
 	}
 	//go:embed zblit.vert.0.glsl100es
 	zblit_vert_0_glsl100es string
-	//go:embed zblit.vert.0.glsl300es
-	zblit_vert_0_glsl300es string
-	//go:embed zblit.vert.0.glsl130
-	zblit_vert_0_glsl130 string
 	//go:embed zblit.vert.0.glsl150
 	zblit_vert_0_glsl150 string
 	//go:embed zblit.vert.0.dxbc
@@ -115,10 +99,6 @@ var (
 	}
 	//go:embed zcopy.frag.0.glsl100es
 	zcopy_frag_0_glsl100es string
-	//go:embed zcopy.frag.0.glsl300es
-	zcopy_frag_0_glsl300es string
-	//go:embed zcopy.frag.0.glsl130
-	zcopy_frag_0_glsl130 string
 	//go:embed zcopy.frag.0.glsl150
 	zcopy_frag_0_glsl150 string
 	//go:embed zcopy.frag.0.dxbc
@@ -140,10 +120,6 @@ var (
 	}
 	//go:embed zcopy.vert.0.glsl100es
 	zcopy_vert_0_glsl100es string
-	//go:embed zcopy.vert.0.glsl300es
-	zcopy_vert_0_glsl300es string
-	//go:embed zcopy.vert.0.glsl130
-	zcopy_vert_0_glsl130 string
 	//go:embed zcopy.vert.0.glsl150
 	zcopy_vert_0_glsl150 string
 	//go:embed zcopy.vert.0.dxbc
@@ -183,10 +159,6 @@ var (
 	}
 	//go:embed zcover.frag.0.glsl100es
 	zcover_frag_0_glsl100es string
-	//go:embed zcover.frag.0.glsl300es
-	zcover_frag_0_glsl300es string
-	//go:embed zcover.frag.0.glsl130
-	zcover_frag_0_glsl130 string
 	//go:embed zcover.frag.0.glsl150
 	zcover_frag_0_glsl150 string
 	//go:embed zcover.frag.0.dxbc
@@ -199,10 +171,6 @@ var (
 	zcover_frag_0_metallibiossimulator string
 	//go:embed zcover.frag.1.glsl100es
 	zcover_frag_1_glsl100es string
-	//go:embed zcover.frag.1.glsl300es
-	zcover_frag_1_glsl300es string
-	//go:embed zcover.frag.1.glsl130
-	zcover_frag_1_glsl130 string
 	//go:embed zcover.frag.1.glsl150
 	zcover_frag_1_glsl150 string
 	//go:embed zcover.frag.1.dxbc
@@ -215,10 +183,6 @@ var (
 	zcover_frag_1_metallibiossimulator string
 	//go:embed zcover.frag.2.glsl100es
 	zcover_frag_2_glsl100es string
-	//go:embed zcover.frag.2.glsl300es
-	zcover_frag_2_glsl300es string
-	//go:embed zcover.frag.2.glsl130
-	zcover_frag_2_glsl130 string
 	//go:embed zcover.frag.2.glsl150
 	zcover_frag_2_glsl150 string
 	//go:embed zcover.frag.2.dxbc
@@ -240,10 +204,6 @@ var (
 	}
 	//go:embed zcover.vert.0.glsl100es
 	zcover_vert_0_glsl100es string
-	//go:embed zcover.vert.0.glsl300es
-	zcover_vert_0_glsl300es string
-	//go:embed zcover.vert.0.glsl130
-	zcover_vert_0_glsl130 string
 	//go:embed zcover.vert.0.glsl150
 	zcover_vert_0_glsl150 string
 	//go:embed zcover.vert.0.dxbc
@@ -260,10 +220,6 @@ var (
 	}
 	//go:embed zinput.vert.0.glsl100es
 	zinput_vert_0_glsl100es string
-	//go:embed zinput.vert.0.glsl300es
-	zinput_vert_0_glsl300es string
-	//go:embed zinput.vert.0.glsl130
-	zinput_vert_0_glsl130 string
 	//go:embed zinput.vert.0.glsl150
 	zinput_vert_0_glsl150 string
 	//go:embed zinput.vert.0.dxbc
@@ -281,10 +237,6 @@ var (
 	}
 	//go:embed zintersect.frag.0.glsl100es
 	zintersect_frag_0_glsl100es string
-	//go:embed zintersect.frag.0.glsl300es
-	zintersect_frag_0_glsl300es string
-	//go:embed zintersect.frag.0.glsl130
-	zintersect_frag_0_glsl130 string
 	//go:embed zintersect.frag.0.glsl150
 	zintersect_frag_0_glsl150 string
 	//go:embed zintersect.frag.0.dxbc
@@ -306,10 +258,6 @@ var (
 	}
 	//go:embed zintersect.vert.0.glsl100es
 	zintersect_vert_0_glsl100es string
-	//go:embed zintersect.vert.0.glsl300es
-	zintersect_vert_0_glsl300es string
-	//go:embed zintersect.vert.0.glsl130
-	zintersect_vert_0_glsl130 string
 	//go:embed zintersect.vert.0.glsl150
 	zintersect_vert_0_glsl150 string
 	//go:embed zintersect.vert.0.dxbc
@@ -332,10 +280,6 @@ var (
 	}
 	//go:embed zmaterial.frag.0.glsl100es
 	zmaterial_frag_0_glsl100es string
-	//go:embed zmaterial.frag.0.glsl300es
-	zmaterial_frag_0_glsl300es string
-	//go:embed zmaterial.frag.0.glsl130
-	zmaterial_frag_0_glsl130 string
 	//go:embed zmaterial.frag.0.glsl150
 	zmaterial_frag_0_glsl150 string
 	//go:embed zmaterial.frag.0.dxbc
@@ -357,10 +301,6 @@ var (
 	}
 	//go:embed zmaterial.vert.0.glsl100es
 	zmaterial_vert_0_glsl100es string
-	//go:embed zmaterial.vert.0.glsl300es
-	zmaterial_vert_0_glsl300es string
-	//go:embed zmaterial.vert.0.glsl130
-	zmaterial_vert_0_glsl130 string
 	//go:embed zmaterial.vert.0.glsl150
 	zmaterial_vert_0_glsl150 string
 	//go:embed zmaterial.vert.0.dxbc
@@ -376,10 +316,6 @@ var (
 	}
 	//go:embed zsimple.frag.0.glsl100es
 	zsimple_frag_0_glsl100es string
-	//go:embed zsimple.frag.0.glsl300es
-	zsimple_frag_0_glsl300es string
-	//go:embed zsimple.frag.0.glsl130
-	zsimple_frag_0_glsl130 string
 	//go:embed zsimple.frag.0.glsl150
 	zsimple_frag_0_glsl150 string
 	//go:embed zsimple.frag.0.dxbc
@@ -390,35 +326,12 @@ var (
 	zsimple_frag_0_metallibios string
 	//go:embed zsimple.frag.0.metallibiossimulator
 	zsimple_frag_0_metallibiossimulator string
-	Shader_simple_vert                  = shader.Sources{
-		Name: "simple.vert",
-	}
-	//go:embed zsimple.vert.0.glsl100es
-	zsimple_vert_0_glsl100es string
-	//go:embed zsimple.vert.0.glsl300es
-	zsimple_vert_0_glsl300es string
-	//go:embed zsimple.vert.0.glsl130
-	zsimple_vert_0_glsl130 string
-	//go:embed zsimple.vert.0.glsl150
-	zsimple_vert_0_glsl150 string
-	//go:embed zsimple.vert.0.dxbc
-	zsimple_vert_0_dxbc string
-	//go:embed zsimple.vert.0.metallibmacos
-	zsimple_vert_0_metallibmacos string
-	//go:embed zsimple.vert.0.metallibios
-	zsimple_vert_0_metallibios string
-	//go:embed zsimple.vert.0.metallibiossimulator
-	zsimple_vert_0_metallibiossimulator string
 	Shader_stencil_frag                 = shader.Sources{
 		Name:   "stencil.frag",
 		Inputs: []shader.InputLocation{{Name: "vFrom", Location: 0, Semantic: "TEXCOORD", SemanticIndex: 0, Type: 0x0, Size: 2}, {Name: "vCtrl", Location: 1, Semantic: "TEXCOORD", SemanticIndex: 1, Type: 0x0, Size: 2}, {Name: "vTo", Location: 2, Semantic: "TEXCOORD", SemanticIndex: 2, Type: 0x0, Size: 2}},
 	}
 	//go:embed zstencil.frag.0.glsl100es
 	zstencil_frag_0_glsl100es string
-	//go:embed zstencil.frag.0.glsl300es
-	zstencil_frag_0_glsl300es string
-	//go:embed zstencil.frag.0.glsl130
-	zstencil_frag_0_glsl130 string
 	//go:embed zstencil.frag.0.glsl150
 	zstencil_frag_0_glsl150 string
 	//go:embed zstencil.frag.0.dxbc
@@ -440,10 +353,6 @@ var (
 	}
 	//go:embed zstencil.vert.0.glsl100es
 	zstencil_vert_0_glsl100es string
-	//go:embed zstencil.vert.0.glsl300es
-	zstencil_vert_0_glsl300es string
-	//go:embed zstencil.vert.0.glsl130
-	zstencil_vert_0_glsl130 string
 	//go:embed zstencil.vert.0.glsl150
 	zstencil_vert_0_glsl150 string
 	//go:embed zstencil.vert.0.dxbc
@@ -464,10 +373,8 @@ func init() {
 	)
 	if opengles {
 		Shader_blit_frag[0].GLSL100ES = zblit_frag_0_glsl100es
-		Shader_blit_frag[0].GLSL300ES = zblit_frag_0_glsl300es
 	}
 	if opengl {
-		Shader_blit_frag[0].GLSL130 = zblit_frag_0_glsl130
 		Shader_blit_frag[0].GLSL150 = zblit_frag_0_glsl150
 	}
 	if d3d11 {
@@ -485,10 +392,8 @@ func init() {
 	}
 	if opengles {
 		Shader_blit_frag[1].GLSL100ES = zblit_frag_1_glsl100es
-		Shader_blit_frag[1].GLSL300ES = zblit_frag_1_glsl300es
 	}
 	if opengl {
-		Shader_blit_frag[1].GLSL130 = zblit_frag_1_glsl130
 		Shader_blit_frag[1].GLSL150 = zblit_frag_1_glsl150
 	}
 	if d3d11 {
@@ -506,10 +411,8 @@ func init() {
 	}
 	if opengles {
 		Shader_blit_frag[2].GLSL100ES = zblit_frag_2_glsl100es
-		Shader_blit_frag[2].GLSL300ES = zblit_frag_2_glsl300es
 	}
 	if opengl {
-		Shader_blit_frag[2].GLSL130 = zblit_frag_2_glsl130
 		Shader_blit_frag[2].GLSL150 = zblit_frag_2_glsl150
 	}
 	if d3d11 {
@@ -527,10 +430,8 @@ func init() {
 	}
 	if opengles {
 		Shader_blit_vert.GLSL100ES = zblit_vert_0_glsl100es
-		Shader_blit_vert.GLSL300ES = zblit_vert_0_glsl300es
 	}
 	if opengl {
-		Shader_blit_vert.GLSL130 = zblit_vert_0_glsl130
 		Shader_blit_vert.GLSL150 = zblit_vert_0_glsl150
 	}
 	if d3d11 {
@@ -548,10 +449,8 @@ func init() {
 	}
 	if opengles {
 		Shader_copy_frag.GLSL100ES = zcopy_frag_0_glsl100es
-		Shader_copy_frag.GLSL300ES = zcopy_frag_0_glsl300es
 	}
 	if opengl {
-		Shader_copy_frag.GLSL130 = zcopy_frag_0_glsl130
 		Shader_copy_frag.GLSL150 = zcopy_frag_0_glsl150
 	}
 	if d3d11 {
@@ -569,10 +468,8 @@ func init() {
 	}
 	if opengles {
 		Shader_copy_vert.GLSL100ES = zcopy_vert_0_glsl100es
-		Shader_copy_vert.GLSL300ES = zcopy_vert_0_glsl300es
 	}
 	if opengl {
-		Shader_copy_vert.GLSL130 = zcopy_vert_0_glsl130
 		Shader_copy_vert.GLSL150 = zcopy_vert_0_glsl150
 	}
 	if d3d11 {
@@ -590,10 +487,8 @@ func init() {
 	}
 	if opengles {
 		Shader_cover_frag[0].GLSL100ES = zcover_frag_0_glsl100es
-		Shader_cover_frag[0].GLSL300ES = zcover_frag_0_glsl300es
 	}
 	if opengl {
-		Shader_cover_frag[0].GLSL130 = zcover_frag_0_glsl130
 		Shader_cover_frag[0].GLSL150 = zcover_frag_0_glsl150
 	}
 	if d3d11 {
@@ -611,10 +506,8 @@ func init() {
 	}
 	if opengles {
 		Shader_cover_frag[1].GLSL100ES = zcover_frag_1_glsl100es
-		Shader_cover_frag[1].GLSL300ES = zcover_frag_1_glsl300es
 	}
 	if opengl {
-		Shader_cover_frag[1].GLSL130 = zcover_frag_1_glsl130
 		Shader_cover_frag[1].GLSL150 = zcover_frag_1_glsl150
 	}
 	if d3d11 {
@@ -632,10 +525,8 @@ func init() {
 	}
 	if opengles {
 		Shader_cover_frag[2].GLSL100ES = zcover_frag_2_glsl100es
-		Shader_cover_frag[2].GLSL300ES = zcover_frag_2_glsl300es
 	}
 	if opengl {
-		Shader_cover_frag[2].GLSL130 = zcover_frag_2_glsl130
 		Shader_cover_frag[2].GLSL150 = zcover_frag_2_glsl150
 	}
 	if d3d11 {
@@ -653,10 +544,8 @@ func init() {
 	}
 	if opengles {
 		Shader_cover_vert.GLSL100ES = zcover_vert_0_glsl100es
-		Shader_cover_vert.GLSL300ES = zcover_vert_0_glsl300es
 	}
 	if opengl {
-		Shader_cover_vert.GLSL130 = zcover_vert_0_glsl130
 		Shader_cover_vert.GLSL150 = zcover_vert_0_glsl150
 	}
 	if d3d11 {
@@ -674,10 +563,8 @@ func init() {
 	}
 	if opengles {
 		Shader_input_vert.GLSL100ES = zinput_vert_0_glsl100es
-		Shader_input_vert.GLSL300ES = zinput_vert_0_glsl300es
 	}
 	if opengl {
-		Shader_input_vert.GLSL130 = zinput_vert_0_glsl130
 		Shader_input_vert.GLSL150 = zinput_vert_0_glsl150
 	}
 	if d3d11 {
@@ -695,10 +582,8 @@ func init() {
 	}
 	if opengles {
 		Shader_intersect_frag.GLSL100ES = zintersect_frag_0_glsl100es
-		Shader_intersect_frag.GLSL300ES = zintersect_frag_0_glsl300es
 	}
 	if opengl {
-		Shader_intersect_frag.GLSL130 = zintersect_frag_0_glsl130
 		Shader_intersect_frag.GLSL150 = zintersect_frag_0_glsl150
 	}
 	if d3d11 {
@@ -716,10 +601,8 @@ func init() {
 	}
 	if opengles {
 		Shader_intersect_vert.GLSL100ES = zintersect_vert_0_glsl100es
-		Shader_intersect_vert.GLSL300ES = zintersect_vert_0_glsl300es
 	}
 	if opengl {
-		Shader_intersect_vert.GLSL130 = zintersect_vert_0_glsl130
 		Shader_intersect_vert.GLSL150 = zintersect_vert_0_glsl150
 	}
 	if d3d11 {
@@ -737,10 +620,8 @@ func init() {
 	}
 	if opengles {
 		Shader_material_frag.GLSL100ES = zmaterial_frag_0_glsl100es
-		Shader_material_frag.GLSL300ES = zmaterial_frag_0_glsl300es
 	}
 	if opengl {
-		Shader_material_frag.GLSL130 = zmaterial_frag_0_glsl130
 		Shader_material_frag.GLSL150 = zmaterial_frag_0_glsl150
 	}
 	if d3d11 {
@@ -758,10 +639,8 @@ func init() {
 	}
 	if opengles {
 		Shader_material_vert.GLSL100ES = zmaterial_vert_0_glsl100es
-		Shader_material_vert.GLSL300ES = zmaterial_vert_0_glsl300es
 	}
 	if opengl {
-		Shader_material_vert.GLSL130 = zmaterial_vert_0_glsl130
 		Shader_material_vert.GLSL150 = zmaterial_vert_0_glsl150
 	}
 	if d3d11 {
@@ -779,10 +658,8 @@ func init() {
 	}
 	if opengles {
 		Shader_simple_frag.GLSL100ES = zsimple_frag_0_glsl100es
-		Shader_simple_frag.GLSL300ES = zsimple_frag_0_glsl300es
 	}
 	if opengl {
-		Shader_simple_frag.GLSL130 = zsimple_frag_0_glsl130
 		Shader_simple_frag.GLSL150 = zsimple_frag_0_glsl150
 	}
 	if d3d11 {
@@ -799,32 +676,9 @@ func init() {
 		}
 	}
 	if opengles {
-		Shader_simple_vert.GLSL100ES = zsimple_vert_0_glsl100es
-		Shader_simple_vert.GLSL300ES = zsimple_vert_0_glsl300es
-	}
-	if opengl {
-		Shader_simple_vert.GLSL130 = zsimple_vert_0_glsl130
-		Shader_simple_vert.GLSL150 = zsimple_vert_0_glsl150
-	}
-	if d3d11 {
-		Shader_simple_vert.DXBC = zsimple_vert_0_dxbc
-	}
-	if runtime.GOOS == "darwin" {
-		Shader_simple_vert.MetalLib = zsimple_vert_0_metallibmacos
-	}
-	if runtime.GOOS == "ios" {
-		if runtime.GOARCH == "amd64" {
-			Shader_simple_vert.MetalLib = zsimple_vert_0_metallibiossimulator
-		} else {
-			Shader_simple_vert.MetalLib = zsimple_vert_0_metallibios
-		}
-	}
-	if opengles {
 		Shader_stencil_frag.GLSL100ES = zstencil_frag_0_glsl100es
-		Shader_stencil_frag.GLSL300ES = zstencil_frag_0_glsl300es
 	}
 	if opengl {
-		Shader_stencil_frag.GLSL130 = zstencil_frag_0_glsl130
 		Shader_stencil_frag.GLSL150 = zstencil_frag_0_glsl150
 	}
 	if d3d11 {
@@ -842,10 +696,8 @@ func init() {
 	}
 	if opengles {
 		Shader_stencil_vert.GLSL100ES = zstencil_vert_0_glsl100es
-		Shader_stencil_vert.GLSL300ES = zstencil_vert_0_glsl300es
 	}
 	if opengl {
-		Shader_stencil_vert.GLSL130 = zstencil_vert_0_glsl130
 		Shader_stencil_vert.GLSL150 = zstencil_vert_0_glsl150
 	}
 	if d3d11 {

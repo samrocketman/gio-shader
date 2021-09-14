@@ -24,9 +24,7 @@ import (
 type shaderSources struct {
 	Name          string
 	GLSL100ES     []byte
-	GLSL300ES     []byte
 	GLSL310ES     []byte
-	GLSL130       []byte
 	GLSL150       []byte
 	DXBC          []byte
 	MetalLibs     MetalLibs
@@ -248,9 +246,7 @@ func (conv *Converter) Run(out io.Writer) error {
 				fmt.Fprintf(out, "WorkgroupSize: %#v,\n", src.WorkgroupSize)
 			}
 			writeGenerated(src.GLSL100ES, "GLSL100ES", r.Path, i)
-			writeGenerated(src.GLSL300ES, "GLSL300ES", r.Path, i)
 			writeGenerated(src.GLSL310ES, "GLSL310ES", r.Path, i)
-			writeGenerated(src.GLSL130, "GLSL130", r.Path, i)
 			writeGenerated(src.GLSL150, "GLSL150", r.Path, i)
 			writeGenerated(src.DXBC, "DXBC", r.Path, i)
 			writeGenerated(src.MetalLibs.MacOS, "MetalLibMacOS", r.Path, i)
@@ -276,9 +272,7 @@ func (conv *Converter) Run(out io.Writer) error {
 		}
 		for i, src := range r.Shaders {
 			writeEmbedded(src.GLSL100ES, "GLSL100ES", r.Path, i)
-			writeEmbedded(src.GLSL300ES, "GLSL300ES", r.Path, i)
 			writeEmbedded(src.GLSL310ES, "GLSL310ES", r.Path, i)
-			writeEmbedded(src.GLSL130, "GLSL130", r.Path, i)
 			writeEmbedded(src.GLSL150, "GLSL150", r.Path, i)
 			writeEmbedded(src.DXBC, "DXBC", r.Path, i)
 			writeEmbedded(src.MetalLibs.MacOS, "MetalLibMacOS", r.Path, i)
@@ -312,11 +306,9 @@ func (conv *Converter) Run(out io.Writer) error {
 		for i, src := range r.Shaders {
 			fmt.Fprintf(out, "\tif opengles {\n")
 			writeInit(src.GLSL100ES, "GLSL100ES", "GLSL100ES", r.Path, i, variants)
-			writeInit(src.GLSL300ES, "GLSL300ES", "GLSL300ES", r.Path, i, variants)
 			writeInit(src.GLSL310ES, "GLSL310ES", "GLSL310ES", r.Path, i, variants)
 			fmt.Fprintf(out, "\t}\n")
 			fmt.Fprintf(out, "\tif opengl {\n")
-			writeInit(src.GLSL130, "GLSL130", "GLSL130", r.Path, i, variants)
 			writeInit(src.GLSL150, "GLSL150", "GLSL150", r.Path, i, variants)
 			fmt.Fprintf(out, "\t}\n")
 			fmt.Fprintf(out, "\tif d3d11 {\n")
@@ -384,13 +376,10 @@ func (conv *Converter) Shader(shaderPath string) ([]shaderSources, error) {
 		var sources shaderSources
 		sources.Name = filepath.Base(shaderPath)
 
-		// Ignore error; some shaders are not meant to run in GLSL 1.00.
-		sources.GLSL100ES, _, _ = conv.ShaderVariant(shaderPath, variantName, buf.Bytes(), "es", "100")
-
-		var metadata Metadata
-		sources.GLSL300ES, metadata, err = conv.ShaderVariant(shaderPath, variantName, buf.Bytes(), "es", "300")
+		var reflect Metadata
+		sources.GLSL100ES, reflect, err = conv.ShaderVariant(shaderPath, variantName, buf.Bytes(), "es", "100")
 		if err != nil {
-			return nil, fmt.Errorf("failed to convert GLSL300ES:\n%w", err)
+			return nil, fmt.Errorf("failed to convert GLSL100ES:\n%w", err)
 		}
 
 		metal, _, err := conv.ShaderVariant(shaderPath, variantName, buf.Bytes(), "msl", "10000")
@@ -408,11 +397,6 @@ func (conv *Converter) Shader(shaderPath string) ([]shaderSources, error) {
 			if !errors.Is(err, exec.ErrNotFound) {
 				return nil, fmt.Errorf("failed to build .metallib library:\n%w", err)
 			}
-		}
-
-		sources.GLSL130, _, err = conv.ShaderVariant(shaderPath, variantName, buf.Bytes(), "glsl", "130")
-		if err != nil {
-			return nil, fmt.Errorf("failed to convert GLSL130:\n%w", err)
 		}
 
 		hlsl, _, err := conv.ShaderVariant(shaderPath, variantName, buf.Bytes(), "hlsl", "40")
@@ -437,10 +421,10 @@ func (conv *Converter) Shader(shaderPath string) ([]shaderSources, error) {
 			return nil, fmt.Errorf("failed to convert GLSL150:\n%w", err)
 		}
 
-		sources.Uniforms = metadata.Uniforms
-		sources.Inputs = metadata.Inputs
-		sources.Textures = metadata.Textures
-		sources.WorkgroupSize = metadata.WorkgroupSize
+		sources.Uniforms = reflect.Uniforms
+		sources.Inputs = reflect.Inputs
+		sources.Textures = reflect.Textures
+		sources.WorkgroupSize = reflect.WorkgroupSize
 
 		variants = append(variants, sources)
 	}

@@ -5,9 +5,7 @@ package shader
 type Sources struct {
 	Name          string
 	GLSL100ES     string
-	GLSL300ES     string
 	GLSL310ES     string
-	GLSL130       string
 	GLSL150       string
 	DXBC          string
 	MetalLib      string
