@@ -54,8 +54,6 @@ type InputLocation struct {
 
 type DataType uint8
 
-type DepthFunc uint8
-
 const (
 	DataTypeFloat DataType = iota
 	DataTypeInt
