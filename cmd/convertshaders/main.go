@@ -23,7 +23,6 @@ type shaderSources struct {
 	Name      string
 	SPIRV     []byte
 	GLSL100ES []byte
-	GLSL310ES []byte
 	GLSL150   []byte
 	DXBC      []byte
 	MetalLibs MetalLibs
@@ -248,7 +247,6 @@ func (conv *Converter) Run(out io.Writer) error {
 			}
 			writeGenerated(src.SPIRV, "SPIRV", r.Path, i)
 			writeGenerated(src.GLSL100ES, "GLSL100ES", r.Path, i)
-			writeGenerated(src.GLSL310ES, "GLSL310ES", r.Path, i)
 			writeGenerated(src.GLSL150, "GLSL150", r.Path, i)
 			writeGenerated(src.DXBC, "DXBC", r.Path, i)
 			writeGenerated(src.MetalLibs.MacOS, "MetalLibMacOS", r.Path, i)
@@ -275,7 +273,6 @@ func (conv *Converter) Run(out io.Writer) error {
 		for i, src := range r.Shaders {
 			writeEmbedded(src.SPIRV, "SPIRV", r.Path, i)
 			writeEmbedded(src.GLSL100ES, "GLSL100ES", r.Path, i)
-			writeEmbedded(src.GLSL310ES, "GLSL310ES", r.Path, i)
 			writeEmbedded(src.GLSL150, "GLSL150", r.Path, i)
 			writeEmbedded(src.DXBC, "DXBC", r.Path, i)
 			writeEmbedded(src.MetalLibs.MacOS, "MetalLibMacOS", r.Path, i)
@@ -313,7 +310,6 @@ func (conv *Converter) Run(out io.Writer) error {
 			fmt.Fprintf(out, "\t}\n")
 			fmt.Fprintf(out, "\tif opengles {\n")
 			writeInit(src.GLSL100ES, "GLSL100ES", "GLSL100ES", r.Path, i, variants)
-			writeInit(src.GLSL310ES, "GLSL310ES", "GLSL310ES", r.Path, i, variants)
 			fmt.Fprintf(out, "\t}\n")
 			fmt.Fprintf(out, "\tif opengl {\n")
 			writeInit(src.GLSL150, "GLSL150", "GLSL150", r.Path, i, variants)
@@ -496,12 +492,6 @@ func (conv *Converter) ComputeShader(shaderPath string) ([]shaderSources, error)
 		return nil, fmt.Errorf("failed to extract metadata for shader %q: %w", shaderPath, err)
 	}
 	sources.Reflect = meta
-
-	sources.GLSL310ES, err = conv.spirv.Convert(shaderPath, "", spirv, "es", "310")
-	if err != nil {
-		return nil, fmt.Errorf("failed to convert es compute shader %q: %w", shaderPath, err)
-	}
-	sources.GLSL310ES = unixLineEnding(sources.GLSL310ES)
 
 	metal, err := conv.spirv.Convert(shaderPath, "", spirv, "msl", "10000")
 	if err != nil {

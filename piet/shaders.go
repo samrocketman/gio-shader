@@ -17,8 +17,6 @@ var (
 	}
 	//go:embed zbackdrop.comp.0.spirv
 	zbackdrop_comp_0_spirv string
-	//go:embed zbackdrop.comp.0.glsl310es
-	zbackdrop_comp_0_glsl310es string
 	//go:embed zbackdrop.comp.0.dxbc
 	zbackdrop_comp_0_dxbc string
 	//go:embed zbackdrop.comp.0.metallibmacos
@@ -34,8 +32,6 @@ var (
 	}
 	//go:embed zbinning.comp.0.spirv
 	zbinning_comp_0_spirv string
-	//go:embed zbinning.comp.0.glsl310es
-	zbinning_comp_0_glsl310es string
 	//go:embed zbinning.comp.0.dxbc
 	zbinning_comp_0_dxbc string
 	//go:embed zbinning.comp.0.metallibmacos
@@ -51,8 +47,6 @@ var (
 	}
 	//go:embed zcoarse.comp.0.spirv
 	zcoarse_comp_0_spirv string
-	//go:embed zcoarse.comp.0.glsl310es
-	zcoarse_comp_0_glsl310es string
 	//go:embed zcoarse.comp.0.dxbc
 	zcoarse_comp_0_dxbc string
 	//go:embed zcoarse.comp.0.metallibmacos
@@ -68,8 +62,6 @@ var (
 	}
 	//go:embed zelements.comp.0.spirv
 	zelements_comp_0_spirv string
-	//go:embed zelements.comp.0.glsl310es
-	zelements_comp_0_glsl310es string
 	//go:embed zelements.comp.0.dxbc
 	zelements_comp_0_dxbc string
 	//go:embed zelements.comp.0.metallibmacos
@@ -86,8 +78,6 @@ var (
 	}
 	//go:embed zkernel4.comp.0.spirv
 	zkernel4_comp_0_spirv string
-	//go:embed zkernel4.comp.0.glsl310es
-	zkernel4_comp_0_glsl310es string
 	//go:embed zkernel4.comp.0.dxbc
 	zkernel4_comp_0_dxbc string
 	//go:embed zkernel4.comp.0.metallibmacos
@@ -103,8 +93,6 @@ var (
 	}
 	//go:embed zpath_coarse.comp.0.spirv
 	zpath_coarse_comp_0_spirv string
-	//go:embed zpath_coarse.comp.0.glsl310es
-	zpath_coarse_comp_0_glsl310es string
 	//go:embed zpath_coarse.comp.0.dxbc
 	zpath_coarse_comp_0_dxbc string
 	//go:embed zpath_coarse.comp.0.metallibmacos
@@ -120,8 +108,6 @@ var (
 	}
 	//go:embed ztile_alloc.comp.0.spirv
 	ztile_alloc_comp_0_spirv string
-	//go:embed ztile_alloc.comp.0.glsl310es
-	ztile_alloc_comp_0_glsl310es string
 	//go:embed ztile_alloc.comp.0.dxbc
 	ztile_alloc_comp_0_dxbc string
 	//go:embed ztile_alloc.comp.0.metallibmacos
@@ -143,7 +129,6 @@ func init() {
 		Shader_backdrop_comp.SPIRV = zbackdrop_comp_0_spirv
 	}
 	if opengles {
-		Shader_backdrop_comp.GLSL310ES = zbackdrop_comp_0_glsl310es
 	}
 	if opengl {
 	}
@@ -164,7 +149,6 @@ func init() {
 		Shader_binning_comp.SPIRV = zbinning_comp_0_spirv
 	}
 	if opengles {
-		Shader_binning_comp.GLSL310ES = zbinning_comp_0_glsl310es
 	}
 	if opengl {
 	}
@@ -185,7 +169,6 @@ func init() {
 		Shader_coarse_comp.SPIRV = zcoarse_comp_0_spirv
 	}
 	if opengles {
-		Shader_coarse_comp.GLSL310ES = zcoarse_comp_0_glsl310es
 	}
 	if opengl {
 	}
@@ -206,7 +189,6 @@ func init() {
 		Shader_elements_comp.SPIRV = zelements_comp_0_spirv
 	}
 	if opengles {
-		Shader_elements_comp.GLSL310ES = zelements_comp_0_glsl310es
 	}
 	if opengl {
 	}
@@ -227,7 +209,6 @@ func init() {
 		Shader_kernel4_comp.SPIRV = zkernel4_comp_0_spirv
 	}
 	if opengles {
-		Shader_kernel4_comp.GLSL310ES = zkernel4_comp_0_glsl310es
 	}
 	if opengl {
 	}
@@ -248,7 +229,6 @@ func init() {
 		Shader_path_coarse_comp.SPIRV = zpath_coarse_comp_0_spirv
 	}
 	if opengles {
-		Shader_path_coarse_comp.GLSL310ES = zpath_coarse_comp_0_glsl310es
 	}
 	if opengl {
 	}
@@ -269,7 +249,6 @@ func init() {
 		Shader_tile_alloc_comp.SPIRV = ztile_alloc_comp_0_spirv
 	}
 	if opengles {
-		Shader_tile_alloc_comp.GLSL310ES = ztile_alloc_comp_0_glsl310es
 	}
 	if opengl {
 	}

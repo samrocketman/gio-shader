@@ -6,7 +6,6 @@ type Sources struct {
 	Name           string
 	SPIRV          string
 	GLSL100ES      string
-	GLSL310ES      string
 	GLSL150        string
 	DXBC           string
 	MetalLib       string
