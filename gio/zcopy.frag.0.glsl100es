@@ -19,7 +19,9 @@ void main()
     vec4 texel = texture2D(tex, vUV);
     vec3 param = texel.xyz;
     vec3 _59 = sRGBtoRGB(param);
-    texel = vec4(_59.x, _59.y, _59.z, texel.w);
+    texel.x = _59.x;
+    texel.y = _59.y;
+    texel.z = _59.z;
     gl_FragData[0] = texel;
 }
 

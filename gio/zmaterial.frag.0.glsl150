@@ -27,7 +27,9 @@ void main()
     {
         vec3 param = texel.xyz;
         vec3 _71 = RGBtosRGB(param);
-        texel = vec4(_71.x, _71.y, _71.z, texel.w);
+        texel.x = _71.x;
+        texel.y = _71.y;
+        texel.z = _71.z;
     }
     fragColor = texel;
 }

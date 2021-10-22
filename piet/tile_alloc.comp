@@ -25,7 +25,8 @@ layout(set = 0, binding = 1) readonly buffer ConfigBuf {
 #define SY (1.0 / float(TILE_HEIGHT_PX))
 
 shared uint sh_tile_count[TILE_ALLOC_WG];
-shared MallocResult sh_tile_alloc;
+shared Alloc sh_tile_alloc;
+shared uint sh_tile_alloc_failed;
 
 void main() {
     uint th_ix = gl_LocalInvocationID.x;
@@ -78,27 +79,29 @@ void main() {
         sh_tile_count[th_ix] = total_tile_count;
     }
     if (th_ix == TILE_ALLOC_WG - 1) {
-        sh_tile_alloc = malloc(total_tile_count * Tile_size);
+        MallocResult res = malloc(total_tile_count * Tile_size);
+		sh_tile_alloc = res.alloc;
+		sh_tile_alloc_failed = res.failed ? 1 : 0;
     }
     barrier();
-    MallocResult alloc_start = sh_tile_alloc;
-    if (alloc_start.failed || mem_error != NO_ERROR) {
+    if (sh_tile_alloc_failed != 0 || mem_error != NO_ERROR) {
         return;
     }
+    Alloc alloc_start = sh_tile_alloc;
 
     if (element_ix < conf.n_elements) {
         uint tile_subix = th_ix > 0 ? sh_tile_count[th_ix - 1] : 0;
-        Alloc tiles_alloc = slice_mem(alloc_start.alloc, Tile_size * tile_subix, Tile_size * tile_count);
+        Alloc tiles_alloc = slice_mem(alloc_start, Tile_size * tile_subix, Tile_size * tile_count);
         path.tiles = TileRef(tiles_alloc.offset);
         Path_write(conf.tile_alloc, path_ref, path);
     }
 
     // Zero out allocated tiles efficiently
     uint total_count = sh_tile_count[TILE_ALLOC_WG - 1] * (Tile_size / 4);
-    uint start_ix = alloc_start.alloc.offset >> 2;
+    uint start_ix = alloc_start.offset >> 2;
     for (uint i = th_ix; i < total_count; i += TILE_ALLOC_WG) {
         // Note: this interleaving is faster than using Tile_write
         // by a significant amount.
-        write_mem(alloc_start.alloc, start_ix + i, 0);
+        write_mem(alloc_start, start_ix + i, 0);
     }
 }

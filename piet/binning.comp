@@ -33,7 +33,8 @@ layout(set = 0, binding = 1) readonly buffer ConfigBuf {
 shared uint bitmaps[N_SLICE][N_TILE];
 shared uint count[N_SLICE][N_TILE];
 shared Alloc sh_chunk_alloc[N_TILE];
-shared bool sh_alloc_failed;
+// Really a bool, Some Metal devices doesn't accept shared bools.
+shared uint sh_alloc_failed;
 
 void main() {
     uint my_n_elements = conf.n_elements;
@@ -43,7 +44,7 @@ void main() {
         bitmaps[i][gl_LocalInvocationID.x] = 0;
     }
     if (gl_LocalInvocationID.x == 0) {
-        sh_alloc_failed = false;
+        sh_alloc_failed = 0;
     }
     barrier();
 
@@ -108,7 +109,7 @@ void main() {
         chunk_alloc = chunk.alloc;
         sh_chunk_alloc[gl_LocalInvocationID.x] = chunk_alloc;
         if (chunk.failed) {
-            sh_alloc_failed = true;
+            sh_alloc_failed = 1;
         }
     }
     // Note: it might be more efficient for reading to do this in the
@@ -118,7 +119,7 @@ void main() {
     write_mem(conf.bin_alloc, out_ix + 1, chunk_alloc.offset);
 
     barrier();
-    if (sh_alloc_failed || mem_error != NO_ERROR) {
+    if (sh_alloc_failed != 0 || mem_error != NO_ERROR) {
         return;
     }
 
