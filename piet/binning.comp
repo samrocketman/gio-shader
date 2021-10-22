@@ -33,7 +33,7 @@ layout(set = 0, binding = 1) readonly buffer ConfigBuf {
 shared uint bitmaps[N_SLICE][N_TILE];
 shared uint count[N_SLICE][N_TILE];
 shared Alloc sh_chunk_alloc[N_TILE];
-// Really a bool, Some Metal devices doesn't accept shared bools.
+// Really a bool, but some Metal devices don't accept shared bools.
 shared uint sh_alloc_failed;
 
 void main() {

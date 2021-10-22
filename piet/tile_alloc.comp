@@ -26,6 +26,7 @@ layout(set = 0, binding = 1) readonly buffer ConfigBuf {
 
 shared uint sh_tile_count[TILE_ALLOC_WG];
 shared Alloc sh_tile_alloc;
+// Really a bool, but some Metal devices don't accept shared bools.
 shared uint sh_tile_alloc_failed;
 
 void main() {
@@ -80,8 +81,8 @@ void main() {
     }
     if (th_ix == TILE_ALLOC_WG - 1) {
         MallocResult res = malloc(total_tile_count * Tile_size);
-		sh_tile_alloc = res.alloc;
-		sh_tile_alloc_failed = res.failed ? 1 : 0;
+        sh_tile_alloc = res.alloc;
+        sh_tile_alloc_failed = res.failed ? 1 : 0;
     }
     barrier();
     if (sh_tile_alloc_failed != 0 || mem_error != NO_ERROR) {
