@@ -12,7 +12,8 @@ export CGO_ENABLED=1
 export GOARCH=386
 export VK_ICD_FILENAMES=$SWIFTSHADER/build.32bit/Linux/vk_swiftshader_icd.json
 
-export SWIFTSHADER_TRIPLE=armv7a-none-eabi
+#export SWIFTSHADER_TRIPLE=armv7a-none-eabi
+export SWIFTSHADER_TRIPLE=thumbv7em-unknown-unknown-eabi
 go run gioui.org/cpu/cmd/compile -arch arm -objcopy $OBJCOPY_ARM -layout "0:buffer,1:buffer,2:image,3:image" kernel4.comp
 go run gioui.org/cpu/cmd/compile -arch arm -objcopy $OBJCOPY_ARM -layout "0:buffer,1:buffer" coarse.comp
 go run gioui.org/cpu/cmd/compile -arch arm -objcopy $OBJCOPY_ARM -layout "0:buffer,1:buffer" binning.comp

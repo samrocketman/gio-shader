@@ -10,8 +10,6 @@ import "gioui.org/cpu"
 import "unsafe"
 
 /*
-#cgo LDFLAGS: -lm
-
 #include <stdint.h>
 #include <stdlib.h>
 #include "abi.h"
@@ -23,8 +21,6 @@ import "C"
 var CoarseProgramInfo = (*cpu.ProgramInfo)(unsafe.Pointer(&C.coarse_program_info))
 
 type CoarseDescriptorSetLayout = C.struct_coarse_descriptor_set_layout
-
-const CoarseHash = "e7ef250c08701490aed979a889cca73943b988bdb5e4ca4b02735aebcf5e5505"
 
 func (l *CoarseDescriptorSetLayout) Binding0() *cpu.BufferDescriptor {
 	return (*cpu.BufferDescriptor)(unsafe.Pointer(&l.binding0))

@@ -11,8 +11,6 @@ var CoarseProgramInfo *cpu.ProgramInfo
 
 type CoarseDescriptorSetLayout struct{}
 
-const CoarseHash = ""
-
 func (l *CoarseDescriptorSetLayout) Binding0() *cpu.BufferDescriptor {
 	panic("unsupported")
 }

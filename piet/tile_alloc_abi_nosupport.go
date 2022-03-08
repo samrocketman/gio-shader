@@ -11,8 +11,6 @@ var Tile_allocProgramInfo *cpu.ProgramInfo
 
 type Tile_allocDescriptorSetLayout struct{}
 
-const Tile_allocHash = ""
-
 func (l *Tile_allocDescriptorSetLayout) Binding0() *cpu.BufferDescriptor {
 	panic("unsupported")
 }

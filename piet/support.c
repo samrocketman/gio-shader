@@ -11,10 +11,7 @@
 #include "runtime.h"
 
 static void *malloc_align(size_t alignment, size_t size) {
-	void *ptr;
-	int ret = posix_memalign(&ptr, alignment, size);
-	assert(ret == 0);
-	return ptr;
+	return malloc(size);
 }
 
 ATTR_HIDDEN void *coroutine_alloc_frame(size_t size) {

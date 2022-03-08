@@ -11,8 +11,6 @@ var BinningProgramInfo *cpu.ProgramInfo
 
 type BinningDescriptorSetLayout struct{}
 
-const BinningHash = ""
-
 func (l *BinningDescriptorSetLayout) Binding0() *cpu.BufferDescriptor {
 	panic("unsupported")
 }

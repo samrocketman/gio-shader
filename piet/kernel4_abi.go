@@ -10,8 +10,6 @@ import "gioui.org/cpu"
 import "unsafe"
 
 /*
-#cgo LDFLAGS: -lm
-
 #include <stdint.h>
 #include <stdlib.h>
 #include "abi.h"
@@ -23,8 +21,6 @@ import "C"
 var Kernel4ProgramInfo = (*cpu.ProgramInfo)(unsafe.Pointer(&C.kernel4_program_info))
 
 type Kernel4DescriptorSetLayout = C.struct_kernel4_descriptor_set_layout
-
-const Kernel4Hash = "88ae29cf53c1819fad9680e85faaee30fcc934d1a978a717695c966ef051bf1d"
 
 func (l *Kernel4DescriptorSetLayout) Binding0() *cpu.BufferDescriptor {
 	return (*cpu.BufferDescriptor)(unsafe.Pointer(&l.binding0))
