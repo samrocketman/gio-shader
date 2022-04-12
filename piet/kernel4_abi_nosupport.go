@@ -11,8 +11,6 @@ var Kernel4ProgramInfo *cpu.ProgramInfo
 
 type Kernel4DescriptorSetLayout struct{}
 
-const Kernel4Hash = ""
-
 func (l *Kernel4DescriptorSetLayout) Binding0() *cpu.BufferDescriptor {
 	panic("unsupported")
 }

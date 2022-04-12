@@ -24,8 +24,6 @@ var BinningProgramInfo = (*cpu.ProgramInfo)(unsafe.Pointer(&C.binning_program_in
 
 type BinningDescriptorSetLayout = C.struct_binning_descriptor_set_layout
 
-const BinningHash = "84177b6dfb90309a6c054ab9fea42293bd49033c221651c756eb40188f4d6ce8"
-
 func (l *BinningDescriptorSetLayout) Binding0() *cpu.BufferDescriptor {
 	return (*cpu.BufferDescriptor)(unsafe.Pointer(&l.binding0))
 }

@@ -24,8 +24,6 @@ var BackdropProgramInfo = (*cpu.ProgramInfo)(unsafe.Pointer(&C.backdrop_program_
 
 type BackdropDescriptorSetLayout = C.struct_backdrop_descriptor_set_layout
 
-const BackdropHash = "6862eaf623d89da635e9d5bc981c77aae4e39aa44047ab47c62d243cf5fe7e73"
-
 func (l *BackdropDescriptorSetLayout) Binding0() *cpu.BufferDescriptor {
 	return (*cpu.BufferDescriptor)(unsafe.Pointer(&l.binding0))
 }

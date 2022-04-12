@@ -11,8 +11,6 @@ var ElementsProgramInfo *cpu.ProgramInfo
 
 type ElementsDescriptorSetLayout struct{}
 
-const ElementsHash = ""
-
 func (l *ElementsDescriptorSetLayout) Binding0() *cpu.BufferDescriptor {
 	panic("unsupported")
 }

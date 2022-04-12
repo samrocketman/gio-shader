@@ -24,8 +24,6 @@ var ElementsProgramInfo = (*cpu.ProgramInfo)(unsafe.Pointer(&C.elements_program_
 
 type ElementsDescriptorSetLayout = C.struct_elements_descriptor_set_layout
 
-const ElementsHash = "0f18de15866045b36217068789c9c8715a63e0f9f120c53ea2d4d76f53e443c3"
-
 func (l *ElementsDescriptorSetLayout) Binding0() *cpu.BufferDescriptor {
 	return (*cpu.BufferDescriptor)(unsafe.Pointer(&l.binding0))
 }

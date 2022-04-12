@@ -11,8 +11,6 @@ var Path_coarseProgramInfo *cpu.ProgramInfo
 
 type Path_coarseDescriptorSetLayout struct{}
 
-const Path_coarseHash = ""
-
 func (l *Path_coarseDescriptorSetLayout) Binding0() *cpu.BufferDescriptor {
 	panic("unsupported")
 }
