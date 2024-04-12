@@ -13,6 +13,15 @@ $ cd piet
 $ ./gencpu.sh
 ```
 
+# Development shell with Nix
+
+Use Nix flakes to set up a development shell with the tool available
+for running `go generate`:
+
+```
+$ nix shell
+```
+
 ## Issues and contributions
 
 See the [Gio contribution guide](https://gioui.org/doc/contribute).
