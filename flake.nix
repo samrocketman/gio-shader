@@ -1,6 +1,6 @@
 {
   inputs = {
-    nixpkgs.url = "github:NixOS/nixpkgs/nixos-25.05";
+    nixpkgs.url = "github:NixOS/nixpkgs/nixos-26.05";
     flake-utils.url = "github:numtide/flake-utils";
   };
   outputs = { self, nixpkgs, flake-utils }:
@@ -14,7 +14,7 @@
         with pkgs;
         {
           devShells.default = mkShell {
-            buildInputs = [ glslang spirv-cross];
+            buildInputs = [ glslang spirv-cross ];
           };
         }
       );
