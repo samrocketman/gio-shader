@@ -3,6 +3,7 @@
 package main
 
 import (
+	"bytes"
 	"encoding/json"
 	"fmt"
 	"math"
@@ -73,6 +74,14 @@ func (spirv *SPIRVCross) Convert(path, variant string, shader []byte, target, ve
 	out, err := cmd.CombinedOutput()
 	if err != nil {
 		return nil, fmt.Errorf("%s\nfailed to run %v: %w", out, cmd.Args, err)
+	}
+	// Force "highp" precision even for GLSL 1.00 targets, to avoid rendering
+	// artifacts[0]
+	//
+	// [0]: https://gioui.org/issue/686
+	switch target {
+	case "es":
+		out = bytes.ReplaceAll(out, []byte("precision mediump float;"), []byte("precision highp float;"))
 	}
 	if target != "hlsl" {
 		// Strip Windows \r in line endings.
