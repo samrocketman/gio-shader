@@ -20,6 +20,7 @@ for running `go generate`:
 
 ```
 $ nix shell
+$ DEVELOPER_DIR=/Applications/Xcode.app/Contents/Developer go generate ./...
 ```
 
 ## Issues and contributions
