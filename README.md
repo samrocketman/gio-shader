@@ -19,7 +19,7 @@ Use Nix flakes to set up a development shell with the tool available
 for running `go generate`:
 
 ```
-$ nix shell
+$ nix develop
 $ DEVELOPER_DIR=/Applications/Xcode.app/Contents/Developer go generate ./...
 ```
 
